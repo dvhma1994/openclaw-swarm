@@ -16,6 +16,7 @@ from .web_search import WebSearch, SearchResult
 from .providers import ProviderManager, ProviderProfile, ProviderType, AgentRouter
 from .streaming import StreamManager, StreamGenerator, TokenCounter, ProgressTracker, RateLimiter
 from .hooks import HookManager, Hook, HookType, HookContext, HookResult
+from .tools import ToolRegistry, Tool, ToolType, ToolResult, BashTool, ReadTool, WriteTool, EditTool, GrepTool, GlobTool
 
 __all__ = [
     "Router",
@@ -69,4 +70,14 @@ __all__ = [
     "HookType",
     "HookContext",
     "HookResult",
+    "ToolRegistry",
+    "Tool",
+    "ToolType",
+    "ToolResult",
+    "BashTool",
+    "ReadTool",
+    "WriteTool",
+    "EditTool",
+    "GrepTool",
+    "GlobTool",
 ]
