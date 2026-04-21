@@ -2,34 +2,34 @@
 # Inspired by dario - Universal LLM Router
 
 models:
-  # Code generation
+  # Code generation - best at code
   coding:
-    primary: "glm-5:cloud"
+    primary: "qwen2.5:7b"
     fallback: "glm-5:cloud"
     timeout: 120
 
   # Reasoning tasks
   reasoning:
-    primary: "glm-5:cloud"
+    primary: "qwen2.5:7b"
     fallback: "glm-5:cloud"
     timeout: 180
 
   # Conversations
   chat:
     primary: "glm-5:cloud"
-    fallback: "glm-5:cloud"
+    fallback: "qwen2.5:7b"
     timeout: 60
 
   # General purpose
   general:
     primary: "glm-5:cloud"
-    fallback: "glm-5:cloud"
+    fallback: "qwen2.5:7b"
     timeout: 90
 
   # Arabic support
   arabic:
     primary: "glm-5:cloud"
-    fallback: "glm-5:cloud"
+    fallback: "qwen2.5:7b"
     timeout: 90
 
 routing:
