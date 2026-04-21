@@ -14,6 +14,8 @@ from .swarm import SwarmCoordinator, SwarmAgent, SwarmTask, AgentRole, TaskPrior
 from .agents import Planner, Coder, Reviewer, Researcher
 from .web_search import WebSearch, SearchResult
 from .providers import ProviderManager, ProviderProfile, ProviderType, AgentRouter
+from .streaming import StreamManager, StreamGenerator, TokenCounter, ProgressTracker, RateLimiter
+from .hooks import HookManager, Hook, HookType, HookContext, HookResult
 
 __all__ = [
     "Router",
@@ -57,4 +59,14 @@ __all__ = [
     "ProviderProfile",
     "ProviderType",
     "AgentRouter",
+    "StreamManager",
+    "StreamGenerator",
+    "TokenCounter",
+    "ProgressTracker",
+    "RateLimiter",
+    "HookManager",
+    "Hook",
+    "HookType",
+    "HookContext",
+    "HookResult",
 ]
