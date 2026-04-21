@@ -287,5 +287,28 @@ def swarm(
     console.print(f"\n[dim]Completed {result['completed']}/{result['subtasks']} subtasks[/dim]")
 
 
+@app.command()
+def anonymize_cmd(
+    text: str = typer.Argument(..., help="Text to anonymize"),
+    types: str = typer.Option(None, "--types", "-t", help="PII types to anonymize (comma-separated)"),
+):
+    """Anonymize PII in text"""
+    from .anonymizer import Anonymizer
+    
+    anon = Anonymizer()
+    
+    type_list = types.split(",") if types else None
+    result = anon.anonymize(text, types=type_list)
+    
+    console.print("\n[bold green]Anonymized Text:[/bold green]")
+    console.print(result.anonymized)
+    
+    console.print("\n[bold yellow]Detected PII:[/bold yellow]")
+    for entity in result.entities:
+        console.print(f"  - {entity.type}: {entity.value[:20]}...")
+    
+    console.print(f"\n[dim]Replaced {len(result.entities)} PII entities[/dim]")
+
+
 if __name__ == "__main__":
     app()

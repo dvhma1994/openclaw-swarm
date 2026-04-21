@@ -1,12 +1,13 @@
 """OpenClaw Swarm - Multi-Agent AI System"""
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __author__ = "Mohamed Elsaeed"
 
 from .router import Router, TaskType
 from .orchestrator import Orchestrator
 from .memory import Memory, MemoryEntry, remember, recall
 from .experience import ExperienceDB, Experience, Lesson, learn, get_advice
+from .anonymizer import Anonymizer, PIIEntity, anonymize, de_anonymize, check_pii
 from .swarm import SwarmCoordinator, SwarmAgent, SwarmTask, AgentRole, TaskPriority, run_swarm
 from .agents import Planner, Coder, Reviewer, Researcher
 
@@ -23,6 +24,11 @@ __all__ = [
     "Lesson",
     "learn",
     "get_advice",
+    "Anonymizer",
+    "PIIEntity",
+    "anonymize",
+    "de_anonymize",
+    "check_pii",
     "SwarmCoordinator",
     "SwarmAgent",
     "SwarmTask",
