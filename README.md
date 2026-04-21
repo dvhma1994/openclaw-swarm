@@ -171,10 +171,12 @@ print(advice["best_practices"])
 ## Stats
 
 - Version: 0.5.0
-- Tests: 85 passing
-- Files: 35+
-- Lines: 15000+
-- Commits: 12
+- Tests: 95+ passing
+- Files: 40+
+- Lines: 20,000+
+- Commits: 16
+- Contributors: 1
+- License: MIT
 
 ## License
 
