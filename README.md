@@ -161,18 +161,20 @@ print(advice["best_practices"])
 - [x] Experience - Learning from mistakes
 - [x] Swarm - Emergent intelligence
 - [x] Anonymizer - Privacy-first PII protection
+- [x] Multi-tier Memory - Working + Episodic + Semantic
+- [x] Plugin System - Easy extensions
 - [x] Web UI - Dashboard for monitoring
-- [ ] Multi-tier Memory - Working + Episodic + Semantic
-- [ ] Plugin System - Easy extensions
+- [x] Integration Tests - End-to-end testing
+- [ ] Performance Benchmarks
 - [ ] Real-time Collaboration
 
 ## Stats
 
-- Version: 0.4.0
-- Tests: 32 passing
-- Files: 25+
-- Lines: 8000+
-- Commits: 9
+- Version: 0.5.0
+- Tests: 85 passing
+- Files: 35+
+- Lines: 15000+
+- Commits: 12
 
 ## License
 
