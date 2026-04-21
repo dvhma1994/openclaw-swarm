@@ -274,14 +274,14 @@ class EpisodicMemory:
             ]
         
         # Filter by participants
-        if participants:
+        if participants and isinstance(participants, list):
             results = [
                 r for r in results
                 if any(p in r.participants for p in participants)
             ]
         
         # Filter by tags
-        if tags:
+        if tags and isinstance(tags, list):
             results = [
                 r for r in results
                 if any(t in r.tags for t in tags)
