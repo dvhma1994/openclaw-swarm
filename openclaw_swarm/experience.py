@@ -249,6 +249,13 @@ class ExperienceDB:
         
         return warnings
     
+    def get_advice(self, task_type: str) -> Dict[str, List[str]]:
+        """Get advice for a task type"""
+        return {
+            "best_practices": self.get_best_practices(task_type),
+            "warnings": self.get_warnings(task_type)
+        }
+    
     def find_similar_experiences(
         self,
         task_type: str,
