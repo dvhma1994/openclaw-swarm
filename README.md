@@ -74,6 +74,7 @@ swarm swarm "Build a complete web application"
 | `swarm memory stats` | Memory statistics |
 | `swarm experience advice` | Get learned advice |
 | `swarm swarm "task"` | Run swarm coordination |
+| `swarm dashboard` | Launch web UI |
 
 ## Architecture
 
@@ -160,16 +161,18 @@ print(advice["best_practices"])
 - [x] Experience - Learning from mistakes
 - [x] Swarm - Emergent intelligence
 - [x] Anonymizer - Privacy-first PII protection
+- [x] Web UI - Dashboard for monitoring
 - [ ] Multi-tier Memory - Working + Episodic + Semantic
-- [ ] Web UI - Dashboard for monitoring
 - [ ] Plugin System - Easy extensions
+- [ ] Real-time Collaboration
 
 ## Stats
 
-- Version: 0.3.0
+- Version: 0.4.0
 - Tests: 32 passing
-- Files: 20+
-- Lines: 6000+
+- Files: 25+
+- Lines: 8000+
+- Commits: 9
 
 ## License
 
