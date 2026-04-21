@@ -159,10 +159,17 @@ print(advice["best_practices"])
 - [x] Memory - Persistent storage
 - [x] Experience - Learning from mistakes
 - [x] Swarm - Emergent intelligence
-- [ ] Anonymizer - Privacy-first PII protection
+- [x] Anonymizer - Privacy-first PII protection
 - [ ] Multi-tier Memory - Working + Episodic + Semantic
 - [ ] Web UI - Dashboard for monitoring
 - [ ] Plugin System - Easy extensions
+
+## Stats
+
+- Version: 0.3.0
+- Tests: 32 passing
+- Files: 20+
+- Lines: 6000+
 
 ## License
 
