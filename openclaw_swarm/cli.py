@@ -42,10 +42,10 @@ def run(
         results = orchestrator.run_workflow(prompt, workflow_list, show_progress)
     
     # Display results
-    console.print("\n[bold green]═══ Results ═══[/bold green]\n")
+    console.print("\n[bold green]Results[/bold green]\n")
     
     for agent_id, result in results.items():
-        status = "[green]✓[/green]" if result.success else "[red]✗[/red]"
+        status = "[green]OK[/green]" if result.success else "[red]ERROR[/red]"
         console.print(f"\n[bold]{status} {result.agent_name}[/bold] ({result.duration_ms}ms)")
         
         if result.success:
