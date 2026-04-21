@@ -47,6 +47,14 @@ from .tools import (
     GrepTool,
     GlobTool,
 )
+from .mcp import (
+    MCPServer,
+    MCPClient,
+    MCPTool,
+    MCPResource,
+    MCPPrompt,
+    create_mcp_server,
+)
 
 __all__ = [
     "Router",
@@ -110,4 +118,10 @@ __all__ = [
     "EditTool",
     "GrepTool",
     "GlobTool",
+    "MCPServer",
+    "MCPClient",
+    "MCPTool",
+    "MCPResource",
+    "MCPPrompt",
+    "create_mcp_server",
 ]

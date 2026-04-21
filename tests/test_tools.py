@@ -98,16 +98,16 @@ class TestBashTool:
     def test_bash_with_cwd(self):
         """Test with working directory"""
         tool = BashTool()
-        
+
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a file to verify cwd works
             test_file = os.path.join(tmpdir, "test.txt")
-            with open(test_file, 'w') as f:
+            with open(test_file, "w") as f:
                 f.write("test content")
-            
+
             # List files in the temp directory
-            result = tool.execute("ls" if os.name != 'nt' else "dir /b", cwd=tmpdir)
-            
+            result = tool.execute("ls" if os.name != "nt" else "dir /b", cwd=tmpdir)
+
             assert result.success is True
             # Just verify the command ran successfully
             assert result.exit_code == 0

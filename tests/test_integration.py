@@ -18,11 +18,10 @@ from openclaw_swarm import (
     Memory,
 )
 
-
 # Skip tests that require Ollama in CI
 requires_ollama = pytest.mark.skipif(
-    os.environ.get('CI') == 'true',
-    reason="Requires Ollama which is not available in CI"
+    os.environ.get("CI") == "true",
+    reason="Requires Ollama which is not available in CI",
 )
 
 
