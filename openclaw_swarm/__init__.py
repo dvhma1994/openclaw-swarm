@@ -82,6 +82,16 @@ from .workflow import (
     create_code_review_workflow,
     create_data_pipeline_workflow,
 )
+from .evaluation import (
+    Evaluator,
+    Benchmark,
+    MetricResult,
+    EvaluationResult,
+    MetricType,
+    create_performance_benchmark,
+    create_quality_benchmark,
+    create_cost_benchmark,
+)
 
 __all__ = [
     "Router",
@@ -172,4 +182,12 @@ __all__ = [
     "ConditionType",
     "create_code_review_workflow",
     "create_data_pipeline_workflow",
+    "Evaluator",
+    "Benchmark",
+    "MetricResult",
+    "EvaluationResult",
+    "MetricType",
+    "create_performance_benchmark",
+    "create_quality_benchmark",
+    "create_cost_benchmark",
 ]
