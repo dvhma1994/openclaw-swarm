@@ -12,6 +12,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD with GitHub Actions
 - Comprehensive CONTRIBUTING.md
 
+## [0.7.0] - 2026-04-21
+
+### Added
+- **MCP (Model Context Protocol)**
+  - Server implementation for Claude compatibility
+  - Tools: router_call, memory_search, swarm_run, experience_get_advice
+  - Resources: config/models, config/agents, memory/stats, experience/lessons
+  - Prompts: code_generation, code_review, task_planning
+  - Client for connecting to other MCP servers
+
+- **RAG (Retrieval-Augmented Generation)**
+  - Document storage and retrieval
+  - Text chunking with overlap
+  - Vector embeddings (hash-based)
+  - Cosine similarity search
+  - Context generation for RAG
+  - Persistence to disk
+
+- **Task Queue System**
+  - Priority-based task queue
+  - Worker threads for parallel processing
+  - Task scheduler for future execution
+  - Recurring tasks support
+  - Task retry with max retries
+
+- **Examples**
+  - MCP Server example (07_mcp_server.py)
+  - RAG System example (08_rag_system.py)
+
+### Changed
+- Updated version to 0.7.0
+- Added MCP exports to __init__.py
+- Added RAG exports to __init__.py
+- Added TaskQueue exports to __init__.py
+
 ## [0.6.0] - 2026-04-21
 
 ### Added

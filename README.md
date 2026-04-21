@@ -26,16 +26,17 @@ A hybrid multi-agent system combining the best ideas from top open-source projec
 - **Streaming** - Real-time token output
 - **Hooks System** - Lifecycle hooks for agents, tools, events
 - **Tool System** - Bash, Read, Write, Edit, Grep, Glob tools
+- **MCP Support** - Model Context Protocol for Claude compatibility
+- **RAG System** - Document retrieval with embeddings
+- **Task Queue** - Priority-based task queue with workers
 
-### New in v0.6.0
+### New in v0.7.0
 
 | Feature | Description |
 |---------|-------------|
-| **Web Search** | Search the web with DuckDuckGo |
-| **Provider Profiles** | Manage multiple AI providers |
-| **Streaming** | Real-time token output |
-| **Hooks** | Lifecycle hooks for customization |
-| **Tools** | Bash, Read, Write, Edit, Grep, Glob |
+| **MCP Support** | Model Context Protocol for Claude compatibility |
+| **RAG System** | Document retrieval with embeddings |
+| **Task Queue** | Priority-based task queue with workers |
 
 ## Models Used
 
