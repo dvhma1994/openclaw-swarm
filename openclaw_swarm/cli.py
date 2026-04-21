@@ -55,6 +55,101 @@ def run(
 
 
 @app.command()
+def search(query: str, max_results: int = 5):
+    """Search the web using DuckDuckGo"""
+    from .web_search import WebSearch
+    
+    web = WebSearch()
+    results = web.search(query, max_results)
+    
+    console.print(f"\n[bold]Search Results for: {query}[/bold]\n")
+    
+    for i, result in enumerate(results, 1):
+        console.print(f"{i}. [cyan]{result.title}[/cyan]")
+        console.print(f"   {result.url}")
+        if result.snippet:
+            console.print(f"   {result.snippet[:100]}...\n")
+
+
+@app.command()
+def fetch(url: str):
+    """Fetch a webpage and convert to markdown"""
+    from .web_search import WebSearch
+    
+    web = WebSearch()
+    content = web.fetch(url)
+    
+    console.print("\n[bold]Fetched Content:[/bold]\n")
+    console.print(content[:1000] + "..." if len(content) > 1000 else content)
+
+
+@app.command()
+def providers():
+    """List available provider profiles"""
+    from .providers import ProviderManager, ProviderType
+    
+    manager = ProviderManager()
+    
+    table = Table(title="Available Providers")
+    table.add_column("Provider", style="cyan")
+    table.add_column("Base URL", style="green")
+    table.add_column("Default Model", style="yellow")
+    
+    # Show built-in providers
+    table.add_row(
+        "Ollama",
+        "http://localhost:11434/v1",
+        manager.get_default_models()[ProviderType.OLLAMA]
+    )
+    table.add_row(
+        "OpenAI",
+        "https://api.openai.com/v1",
+        manager.get_default_models()[ProviderType.OPENAI]
+    )
+    table.add_row(
+        "Gemini",
+        "https://generativelanguage.googleapis.com/v1beta",
+        manager.get_default_models()[ProviderType.GEMINI]
+    )
+    table.add_row(
+        "DeepSeek",
+        "https://api.deepseek.com/v1",
+        manager.get_default_models()[ProviderType.DEEPSEEK]
+    )
+    
+    # Show custom profiles
+    for name, profile in manager.profiles.items():
+        table.add_row(
+            name,
+            profile.base_url,
+            profile.default_model or "-"
+        )
+    
+    console.print(table)
+
+
+@app.command()
+def routing():
+    """Show agent routing configuration"""
+    from .providers import AgentRouter
+    
+    router = AgentRouter()
+    
+    table = Table(title="Agent Routing")
+    table.add_column("Agent", style="cyan")
+    table.add_column("Model", style="green")
+    
+    # Show default
+    table.add_row("(default)", router.default_model)
+    
+    # Show routed agents
+    for agent, model in router.routing.items():
+        table.add_row(agent, model)
+    
+    console.print(table)
+
+
+@app.command()
 def agents():
     """List available agents"""
     orchestrator = Orchestrator()
