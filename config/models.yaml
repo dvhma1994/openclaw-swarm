@@ -1,0 +1,47 @@
+# Router Configuration
+# Inspired by dario - Universal LLM Router
+
+models:
+  # Code generation - best at code
+  coding:
+    primary: "qwen2.5:14b"
+    fallback: "qwen2.5:7b"
+    timeout: 120
+
+  # Reasoning tasks
+  reasoning:
+    primary: "phi4:14b"
+    fallback: "gemma3:12b"
+    timeout: 180
+
+  # Conversations
+  chat:
+    primary: "gemma3:27b"
+    fallback: "glm-5:cloud"
+    timeout: 60
+
+  # General purpose
+  general:
+    primary: "glm-5:cloud"
+    fallback: "gemma3:12b"
+    timeout: 90
+
+  # Arabic support
+  arabic:
+    primary: "gemma3:27b"
+    fallback: "glm-5:cloud"
+    timeout: 90
+
+routing:
+  # Auto-detect task type from prompt
+  auto_detect: true
+  
+  # Use fallback on failure
+  fallback_enabled: true
+  
+  # Max retries
+  max_retries: 3
+
+ollama:
+  base_url: "http://localhost:11434"
+  timeout: 300

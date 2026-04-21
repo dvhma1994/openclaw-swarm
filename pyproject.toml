@@ -1,0 +1,35 @@
+[project]
+name = "openclaw-swarm"
+version = "0.1.0"
+description = "Multi-Agent AI System - 100% Local with Ollama"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Mohamed Elsaeed", email = "melsaeed498@gmail.com"}
+]
+
+dependencies = [
+    "ollama>=0.1.0",
+    "pydantic>=2.0.0",
+    "rich>=13.0.0",
+    "typer>=0.9.0",
+    "httpx>=0.25.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+swarm = "openclaw_swarm.cli:app"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

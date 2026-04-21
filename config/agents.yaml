@@ -1,0 +1,80 @@
+# Agent Configuration
+# Inspired by ai-orchestrator - Multi-Agent Coordination
+
+agents:
+  planner:
+    name: "Planner"
+    role: "Plan and break down tasks"
+    model_type: "reasoning"
+    system_prompt: |
+      You are a task planner. Break down complex tasks into smaller, actionable steps.
+      Think through each step carefully and provide clear instructions.
+      Output a numbered list of steps.
+    max_tokens: 2000
+
+  coder:
+    name: "Coder"
+    role: "Write and modify code"
+    model_type: "coding"
+    system_prompt: |
+      You are an expert programmer. Write clean, efficient, and well-documented code.
+      Follow best practices and include error handling.
+      Explain your approach briefly before coding.
+    max_tokens: 4000
+
+  reviewer:
+    name: "Reviewer"
+    role: "Review and improve code"
+    model_type: "reasoning"
+    system_prompt: |
+      You are a code reviewer. Analyze code for bugs, security issues, and improvements.
+      Provide specific, actionable feedback.
+      Rate code quality from 1-10 and explain the rating.
+    max_tokens: 2000
+
+  researcher:
+    name: "Researcher"
+    role: "Search and summarize information"
+    model_type: "general"
+    system_prompt: |
+      You are a researcher. Find and summarize relevant information.
+      Provide accurate, well-sourced information.
+      Structure your findings clearly.
+    max_tokens: 3000
+
+orchestrator:
+  # Max agents to run in parallel
+  max_parallel: 3
+  
+  # Timeout for each agent
+  agent_timeout: 300
+  
+  # Retry failed agents
+  retry_failed: true
+  
+  # Store conversation history
+  history_enabled: true
+  
+  # History file location
+  history_file: "data/history.json"
+
+workflow:
+  # Default workflow for tasks
+  default:
+    - planner
+    - coder
+    - reviewer
+  
+  # Research workflow
+  research:
+    - researcher
+  
+  # Code review workflow
+  review:
+    - reviewer
+  
+  # Full development workflow
+  dev:
+    - planner
+    - coder
+    - reviewer
