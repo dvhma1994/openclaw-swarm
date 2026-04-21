@@ -5,13 +5,13 @@ models:
   # Code generation - best at code
   coding:
     primary: "qwen2.5:7b"
-    fallback: "glm-5:cloud"
+    fallback: "phi4:14b"
     timeout: 120
 
   # Reasoning tasks
   reasoning:
-    primary: "qwen2.5:7b"
-    fallback: "glm-5:cloud"
+    primary: "phi4:14b"
+    fallback: "qwen2.5:7b"
     timeout: 180
 
   # Conversations
@@ -29,7 +29,7 @@ models:
   # Arabic support
   arabic:
     primary: "glm-5:cloud"
-    fallback: "qwen2.5:7b"
+    fallback: "phi4:14b"
     timeout: 90
 
 routing:

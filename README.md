@@ -24,10 +24,23 @@ A hybrid multi-agent system combining the best ideas from top open-source projec
 
 | Task | Model | Why |
 |------|-------|-----|
-| Coding | Qwen 2.5 | Great at code |
-| Reasoning | Phi4:14b | Logic tasks |
-| Chat | Gemma3:27b | Conversations |
+| Coding | Qwen 2.5 7B | Great at code |
+| Reasoning | Phi4 14B | Logic tasks |
+| Chat | Gemma3 27B | Conversations |
 | General | GLM-5 | All-purpose |
+
+### Installing Models
+
+```bash
+# Install Ollama models
+ollama pull qwen2.5:7b
+ollama pull phi4:14b
+ollama pull gemma3:27b
+ollama pull glm-5:cloud
+
+# List installed models
+ollama list
+```
 
 ## Installation
 
