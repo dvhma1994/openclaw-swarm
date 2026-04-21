@@ -55,6 +55,15 @@ from .mcp import (
     MCPPrompt,
     create_mcp_server,
 )
+from .rag import (
+    RAGSystem,
+    Document,
+    Chunk,
+    SearchResult,
+    TextChunker,
+    SimpleEmbedder,
+    VectorStore,
+)
 
 __all__ = [
     "Router",
@@ -124,4 +133,11 @@ __all__ = [
     "MCPResource",
     "MCPPrompt",
     "create_mcp_server",
+    "RAGSystem",
+    "Document",
+    "Chunk",
+    "SearchResult",
+    "TextChunker",
+    "SimpleEmbedder",
+    "VectorStore",
 ]
