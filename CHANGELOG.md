@@ -12,6 +12,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD with GitHub Actions
 - Comprehensive CONTRIBUTING.md
 
+## [0.6.0] - 2026-04-21
+
+### Added
+- **Web Search** (inspired by OpenClaude)
+  - DuckDuckGo integration (free)
+  - HTML-to-markdown conversion
+  - Search and fetch APIs
+  - CLI command: `swarm search "query"`
+  - CLI command: `swarm fetch "url"`
+
+- **Provider Profiles** (inspired by OpenClaude)
+  - Multi-provider support (OpenAI, Gemini, DeepSeek, Ollama, Groq, Mistral)
+  - Provider profiles with saved configurations
+  - Agent routing to different models
+  - CLI command: `swarm providers`
+  - CLI command: `swarm routing`
+
+- **Streaming System** (inspired by OpenClaude)
+  - Real-time token output
+  - Stream manager with state management
+  - Token counter with statistics
+  - Progress tracker for long operations
+  - Rate limiter for API calls
+
+- **Hooks System** (inspired by OpenClaude)
+  - Lifecycle hooks for agents, tools, memory, experience
+  - Hook priority and execution order
+  - Hook statistics and tracking
+  - Decorator for easy hook registration
+  - Builder pattern for fluent API
+
+- **Tool System** (inspired by OpenClaude)
+  - Bash tool for command execution
+  - Read tool for file reading
+  - Write tool for file writing
+  - Edit tool for file editing
+  - Grep tool for file searching
+  - Glob tool for file finding
+  - Tool registry for management
+
+- **Examples**
+  - Basic usage example
+  - Web search example
+  - Provider management example
+  - Streaming example
+  - Hooks example
+  - Tools example
+
+### Changed
+- Updated models.yaml to use qwen2.5:7b and phi4:14b
+- Fixed Unicode characters for Windows compatibility in CLI
+- Added 6 new examples
+- Added 6 new test files (197+ tests total)
+
 ## [0.5.0] - 2026-04-21
 
 ### Added

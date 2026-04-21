@@ -23,6 +23,19 @@ A hybrid multi-agent system combining the best ideas from top open-source projec
 - **Web Fetch** - HTTP + HTML-to-markdown
 - **Provider Profiles** - Save multiple AI provider configs
 - **Agent Router** - Route different agents to different models
+- **Streaming** - Real-time token output
+- **Hooks System** - Lifecycle hooks for agents, tools, events
+- **Tool System** - Bash, Read, Write, Edit, Grep, Glob tools
+
+### New in v0.6.0
+
+| Feature | Description |
+|---------|-------------|
+| **Web Search** | Search the web with DuckDuckGo |
+| **Provider Profiles** | Manage multiple AI providers |
+| **Streaming** | Real-time token output |
+| **Hooks** | Lifecycle hooks for customization |
+| **Tools** | Bash, Read, Write, Edit, Grep, Glob |
 
 ## Models Used
 
