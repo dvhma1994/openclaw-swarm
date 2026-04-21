@@ -18,12 +18,11 @@ from .memory import Memory
 from .experience import ExperienceDB
 from .swarm import SwarmCoordinator
 
-
 # Initialize FastAPI
 app = FastAPI(
     title="OpenClaw Swarm Dashboard",
     description="Web UI for managing OpenClaw Swarm",
-    version="0.1.0"
+    version="0.1.0",
 )
 
 # CORS
@@ -55,14 +54,11 @@ class ChatRequest(BaseModel):
 
 # API Endpoints
 
+
 @app.get("/")
 async def root():
     """Root endpoint - serve dashboard"""
-    return {
-        "name": "OpenClaw Swarm Dashboard",
-        "version": "0.1.0",
-        "status": "running"
-    }
+    return {"name": "OpenClaw Swarm Dashboard", "version": "0.1.0", "status": "running"}
 
 
 @app.get("/api/status")
@@ -71,12 +67,12 @@ async def get_status():
     memory_stats = memory.get_stats()
     exp_stats = experience.get_stats()
     swarm_status = swarm.get_status()
-    
+
     return {
         "timestamp": datetime.now().isoformat(),
         "memory": memory_stats,
         "experience": exp_stats,
-        "swarm": swarm_status
+        "swarm": swarm_status,
     }
 
 
@@ -144,7 +140,7 @@ async def get_agents():
             "capabilities": agent.capabilities,
             "current_tasks": agent.current_tasks,
             "total_completed": agent.total_completed,
-            "success_rate": agent.success_rate
+            "success_rate": agent.success_rate,
         }
         for agent_id, agent in swarm.agents.items()
     }
@@ -157,7 +153,7 @@ async def run_swarm_task(request: TaskRequest):
         result = swarm.run_swarm(
             task_description=request.task,
             max_workers=request.max_workers,
-            decompose=request.decompose
+            decompose=request.decompose,
         )
         return result
     except Exception as e:
@@ -167,10 +163,7 @@ async def run_swarm_task(request: TaskRequest):
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat()
-    }
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 
 # Dashboard HTML (simple version)
@@ -324,6 +317,7 @@ async def serve_dashboard():
 def run_server(host: str = "0.0.0.0", port: int = 8000):
     """Run the dashboard server"""
     import uvicorn
+
     uvicorn.run(app, host=host, port=port)
 
 

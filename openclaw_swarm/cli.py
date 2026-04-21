@@ -12,9 +12,7 @@ from .orchestrator import Orchestrator
 from .router import Router, TaskType
 
 app = typer.Typer(
-    name="swarm",
-    help="OpenClaw Swarm - Multi-Agent AI System",
-    add_completion=False
+    name="swarm", help="OpenClaw Swarm - Multi-Agent AI System", add_completion=False
 )
 console = Console()
 
@@ -23,33 +21,47 @@ console = Console()
 def run(
     prompt: str = typer.Argument(..., help="The task or prompt to process"),
     workflow: str = typer.Option("default", "--workflow", "-w", help="Workflow to use"),
-    parallel: bool = typer.Option(False, "--parallel", "-p", help="Run agents in parallel"),
-    show_progress: bool = typer.Option(True, "--progress/--no-progress", help="Show progress"),
+    parallel: bool = typer.Option(
+        False, "--parallel", "-p", help="Run agents in parallel"
+    ),
+    show_progress: bool = typer.Option(
+        True, "--progress/--no-progress", help="Show progress"
+    ),
 ):
     """Run a multi-agent workflow on a prompt"""
     orchestrator = Orchestrator()
-    
-    console.print(Panel.fit(
-        f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Processing: {prompt[:50]}...[/dim]",
-        border_style="blue"
-    ))
-    
+
+    console.print(
+        Panel.fit(
+            f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Processing: {prompt[:50]}...[/dim]",
+            border_style="blue",
+        )
+    )
+
     if parallel:
         console.print("[yellow]Running agents in parallel...[/yellow]")
         results = orchestrator.run_parallel(prompt)
     else:
         workflow_list = workflow.split(",") if "," in workflow else None
         results = orchestrator.run_workflow(prompt, workflow_list, show_progress)
-    
+
     # Display results
     console.print("\n[bold green]Results[/bold green]\n")
-    
+
     for agent_id, result in results.items():
         status = "[green]OK[/green]" if result.success else "[red]ERROR[/red]"
-        console.print(f"\n[bold]{status} {result.agent_name}[/bold] ({result.duration_ms}ms)")
-        
+        console.print(
+            f"\n[bold]{status} {result.agent_name}[/bold] ({result.duration_ms}ms)"
+        )
+
         if result.success:
-            console.print(Markdown(result.output[:500] + "..." if len(result.output) > 500 else result.output))
+            console.print(
+                Markdown(
+                    result.output[:500] + "..."
+                    if len(result.output) > 500
+                    else result.output
+                )
+            )
         else:
             console.print(f"[red]Error: {result.error}[/red]")
 
@@ -58,12 +70,12 @@ def run(
 def search(query: str, max_results: int = 5):
     """Search the web using DuckDuckGo"""
     from .web_search import WebSearch
-    
+
     web = WebSearch()
     results = web.search(query, max_results)
-    
+
     console.print(f"\n[bold]Search Results for: {query}[/bold]\n")
-    
+
     for i, result in enumerate(results, 1):
         console.print(f"{i}. [cyan]{result.title}[/cyan]")
         console.print(f"   {result.url}")
@@ -75,10 +87,10 @@ def search(query: str, max_results: int = 5):
 def fetch(url: str):
     """Fetch a webpage and convert to markdown"""
     from .web_search import WebSearch
-    
+
     web = WebSearch()
     content = web.fetch(url)
-    
+
     console.print("\n[bold]Fetched Content:[/bold]\n")
     console.print(content[:1000] + "..." if len(content) > 1000 else content)
 
@@ -87,44 +99,40 @@ def fetch(url: str):
 def providers():
     """List available provider profiles"""
     from .providers import ProviderManager, ProviderType
-    
+
     manager = ProviderManager()
-    
+
     table = Table(title="Available Providers")
     table.add_column("Provider", style="cyan")
     table.add_column("Base URL", style="green")
     table.add_column("Default Model", style="yellow")
-    
+
     # Show built-in providers
     table.add_row(
         "Ollama",
         "http://localhost:11434/v1",
-        manager.get_default_models()[ProviderType.OLLAMA]
+        manager.get_default_models()[ProviderType.OLLAMA],
     )
     table.add_row(
         "OpenAI",
         "https://api.openai.com/v1",
-        manager.get_default_models()[ProviderType.OPENAI]
+        manager.get_default_models()[ProviderType.OPENAI],
     )
     table.add_row(
         "Gemini",
         "https://generativelanguage.googleapis.com/v1beta",
-        manager.get_default_models()[ProviderType.GEMINI]
+        manager.get_default_models()[ProviderType.GEMINI],
     )
     table.add_row(
         "DeepSeek",
         "https://api.deepseek.com/v1",
-        manager.get_default_models()[ProviderType.DEEPSEEK]
+        manager.get_default_models()[ProviderType.DEEPSEEK],
     )
-    
+
     # Show custom profiles
     for name, profile in manager.profiles.items():
-        table.add_row(
-            name,
-            profile.base_url,
-            profile.default_model or "-"
-        )
-    
+        table.add_row(name, profile.base_url, profile.default_model or "-")
+
     console.print(table)
 
 
@@ -132,20 +140,20 @@ def providers():
 def routing():
     """Show agent routing configuration"""
     from .providers import AgentRouter
-    
+
     router = AgentRouter()
-    
+
     table = Table(title="Agent Routing")
     table.add_column("Agent", style="cyan")
     table.add_column("Model", style="green")
-    
+
     # Show default
     table.add_row("(default)", router.default_model)
-    
+
     # Show routed agents
     for agent, model in router.routing.items():
         table.add_row(agent, model)
-    
+
     console.print(table)
 
 
@@ -153,21 +161,16 @@ def routing():
 def agents():
     """List available agents"""
     orchestrator = Orchestrator()
-    
+
     table = Table(title="Available Agents")
     table.add_column("ID", style="cyan")
     table.add_column("Name", style="green")
     table.add_column("Role", style="yellow")
     table.add_column("Model Type", style="magenta")
-    
+
     for agent_id, agent in orchestrator.agents.items():
-        table.add_row(
-            agent_id,
-            agent.name,
-            agent.role,
-            agent.model_type
-        )
-    
+        table.add_row(agent_id, agent.name, agent.role, agent.model_type)
+
     console.print(table)
 
 
@@ -175,21 +178,17 @@ def agents():
 def models():
     """List configured models"""
     router = Router()
-    
+
     table = Table(title="Configured Models")
     table.add_column("Task Type", style="cyan")
     table.add_column("Primary Model", style="green")
     table.add_column("Fallback Model", style="yellow")
-    
+
     for task_type in TaskType:
         model_config = router.models.get(task_type)
         if model_config:
-            table.add_row(
-                task_type.value,
-                model_config.primary,
-                model_config.fallback
-            )
-    
+            table.add_row(task_type.value, model_config.primary, model_config.fallback)
+
     console.print(table)
 
 
@@ -201,11 +200,11 @@ def chat(
 ):
     """Quick chat with auto-routing"""
     router = Router()
-    
+
     console.print("[dim]Routing to best model...[/dim]")
-    
+
     response = router.call(message, model=model, stream=stream)
-    
+
     if not stream:
         console.print(Markdown(response))
 
@@ -214,44 +213,48 @@ def chat(
 def code(
     task: str = typer.Argument(..., help="Coding task"),
     language: str = typer.Option("python", "--lang", "-l", help="Programming language"),
-    fix: bool = typer.Option(False, "--fix", "-f", help="Fix mode (provide code and error)"),
+    fix: bool = typer.Option(
+        False, "--fix", "-f", help="Fix mode (provide code and error)"
+    ),
 ):
     """Quick code generation/fix"""
     from .agents import Coder
-    
+
     coder = Coder()
-    
+
     if fix:
         # In fix mode, task should contain both code and error
         result = coder.fix("", task, language)
     else:
         result = coder.code(task, language)
-    
+
     console.print(Markdown(result))
 
 
 @app.command()
 def review(
     code_file: str = typer.Argument(..., help="File containing code to review"),
-    security: bool = typer.Option(False, "--security", "-s", help="Security audit mode"),
+    security: bool = typer.Option(
+        False, "--security", "-s", help="Security audit mode"
+    ),
 ):
     """Review code for issues"""
     from .agents import Reviewer
-    
+
     try:
-        with open(code_file, 'r', encoding='utf-8') as f:
+        with open(code_file, "r", encoding="utf-8") as f:
             code = f.read()
     except FileNotFoundError:
         console.print(f"[red]Error: File '{code_file}' not found[/red]")
         raise typer.Exit(1)
-    
+
     reviewer = Reviewer()
-    
+
     if security:
         result = reviewer.security_audit(code)
     else:
         result = reviewer.review(code)
-    
+
     console.print(Markdown(result))
 
 
@@ -261,10 +264,10 @@ def plan(
 ):
     """Create a plan for a task"""
     from .agents import Planner
-    
+
     planner = Planner()
     result = planner.plan(task)
-    
+
     console.print(Markdown(result))
 
 
@@ -272,42 +275,47 @@ def plan(
 def version():
     """Show version information"""
     from . import __version__
-    console.print(f"[bold blue]OpenClaw Swarm[/bold blue] version [green]{__version__}[/green]")
+
+    console.print(
+        f"[bold blue]OpenClaw Swarm[/bold blue] version [green]{__version__}[/green]"
+    )
 
 
 @app.command()
 def memory(
     action: str = typer.Argument(..., help="Action: stats, clear, export"),
-    filepath: str = typer.Option(None, "--file", "-f", help="File path for export/import"),
+    filepath: str = typer.Option(
+        None, "--file", "-f", help="File path for export/import"
+    ),
 ):
     """Manage agent memory"""
     from .memory import Memory
-    
+
     mem = Memory()
-    
+
     if action == "stats":
         stats = mem.get_stats()
         table = Table(title="Memory Statistics")
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="green")
-        
+
         for key, value in stats.items():
             if isinstance(value, dict):
                 table.add_row(key, f"{len(value)} items")
             else:
                 table.add_row(key, str(value))
-        
+
         console.print(table)
-    
+
     elif action == "clear":
         count = mem.clear_old(days=0)
         console.print(f"[green]Cleared {count} memories[/green]")
-    
+
     elif action == "export":
         if not filepath:
             filepath = "memories_export.json"
         mem.export(filepath)
-    
+
     else:
         console.print(f"[red]Unknown action: {action}[/red]")
 
@@ -315,46 +323,48 @@ def memory(
 @app.command()
 def experience(
     action: str = typer.Argument(..., help="Action: stats, advice, export"),
-    task_type: str = typer.Option("general", "--task", "-t", help="Task type for advice"),
+    task_type: str = typer.Option(
+        "general", "--task", "-t", help="Task type for advice"
+    ),
     filepath: str = typer.Option(None, "--file", "-f", help="File path for export"),
 ):
     """Manage experience database"""
     from .experience import ExperienceDB
-    
+
     exp = ExperienceDB()
-    
+
     if action == "stats":
         stats = exp.get_stats()
         table = Table(title="Experience Statistics")
         table.add_column("Metric", style="cyan")
         table.add_column("Value", style="green")
-        
+
         for key, value in stats.items():
             if isinstance(value, list):
                 table.add_row(key, f"{len(value)} types")
             else:
                 table.add_row(key, str(value))
-        
+
         console.print(table)
-    
+
     elif action == "advice":
         advice = exp.get_advice(task_type)
-        
+
         if advice["best_practices"]:
             console.print("[bold green]Best Practices:[/bold green]")
             for practice in advice["best_practices"]:
                 console.print(f"  - {practice}")
-        
+
         if advice["warnings"]:
             console.print("[bold yellow]Warnings:[/bold yellow]")
             for warning in advice["warnings"]:
                 console.print(f"  - {warning}")
-    
+
     elif action == "export":
         if not filepath:
             filepath = "rules_export.json"
         exp.export_rules(filepath)
-    
+
     else:
         console.print(f"[red]Unknown action: {action}[/red]")
 
@@ -362,46 +372,54 @@ def experience(
 @app.command()
 def swarm(
     task: str = typer.Argument(..., help="Task for the swarm"),
-    decompose: bool = typer.Option(True, "--decompose/--no-decompose", help="Decompose complex tasks"),
+    decompose: bool = typer.Option(
+        True, "--decompose/--no-decompose", help="Decompose complex tasks"
+    ),
     workers: int = typer.Option(3, "--workers", "-w", help="Max parallel workers"),
 ):
     """Run a swarm of agents on a task"""
     from .swarm import SwarmCoordinator
-    
-    console.print(Panel.fit(
-        f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Task: {task[:50]}...[/dim]",
-        border_style="blue"
-    ))
-    
+
+    console.print(
+        Panel.fit(
+            f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Task: {task[:50]}...[/dim]",
+            border_style="blue",
+        )
+    )
+
     coordinator = SwarmCoordinator()
     result = coordinator.run_swarm(task, max_workers=workers, decompose=decompose)
-    
+
     console.print("\n[bold green]=== Final Result ===[/bold green]")
     console.print(Markdown(result["final_result"]))
-    
-    console.print(f"\n[dim]Completed {result['completed']}/{result['subtasks']} subtasks[/dim]")
+
+    console.print(
+        f"\n[dim]Completed {result['completed']}/{result['subtasks']} subtasks[/dim]"
+    )
 
 
 @app.command()
 def anonymize_cmd(
     text: str = typer.Argument(..., help="Text to anonymize"),
-    types: str = typer.Option(None, "--types", "-t", help="PII types to anonymize (comma-separated)"),
+    types: str = typer.Option(
+        None, "--types", "-t", help="PII types to anonymize (comma-separated)"
+    ),
 ):
     """Anonymize PII in text"""
     from .anonymizer import Anonymizer
-    
+
     anon = Anonymizer()
-    
+
     type_list = types.split(",") if types else None
     result = anon.anonymize(text, types=type_list)
-    
+
     console.print("\n[bold green]Anonymized Text:[/bold green]")
     console.print(result.anonymized)
-    
+
     console.print("\n[bold yellow]Detected PII:[/bold yellow]")
     for entity in result.entities:
         console.print(f"  - {entity.type}: {entity.value[:20]}...")
-    
+
     console.print(f"\n[dim]Replaced {len(result.entities)} PII entities[/dim]")
 
 
@@ -412,14 +430,16 @@ def dashboard(
 ):
     """Launch web dashboard"""
     from .dashboard import run_server
-    
-    console.print(Panel.fit(
-        f"[bold blue]OpenClaw Swarm Dashboard[/bold blue]\n[dim]http://{host}:{port}/dashboard[/dim]",
-        border_style="blue"
-    ))
-    
+
+    console.print(
+        Panel.fit(
+            f"[bold blue]OpenClaw Swarm Dashboard[/bold blue]\n[dim]http://{host}:{port}/dashboard[/dim]",
+            border_style="blue",
+        )
+    )
+
     console.print("\n[yellow]Press Ctrl+C to stop[/yellow]")
-    
+
     try:
         run_server(host=host, port=port)
     except KeyboardInterrupt:

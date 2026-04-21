@@ -13,10 +13,10 @@ console = Console()
 class Coder:
     """
     Coder Agent - Writes clean, efficient, well-documented code
-    
+
     Uses Qwen models optimized for code generation
     """
-    
+
     SYSTEM_PROMPT = """You are an expert programmer. Your job is to write clean, efficient, and well-documented code.
 
 When writing code:
@@ -50,63 +50,58 @@ Use proper indentation and formatting. Make the code production-ready."""
         self.router = Router()
         self.name = "Coder"
         self.model_type = TaskType.CODING
-    
+
     def code(
-        self, 
-        task: str, 
+        self,
+        task: str,
         language: str = "python",
         context: Optional[str] = None,
-        existing_code: Optional[str] = None
+        existing_code: Optional[str] = None,
     ) -> str:
         """
         Write code for the given task
-        
+
         Args:
             task: The coding task
             language: Programming language
             context: Additional context
             existing_code: Existing code to modify (if any)
-            
+
         Returns:
             Generated code as string
         """
         console.print(f"[bold green]💻 Coder working on: {language}...[/bold green]")
-        
+
         prompt = self.SYSTEM_PROMPT
         prompt += f"\n\nLanguage: {language}"
-        
+
         if context:
             prompt += f"\n\nContext:\n{context}"
-        
+
         if existing_code:
             prompt += f"\n\nExisting code to modify:\n```\n{existing_code}\n```"
-        
+
         prompt += f"\n\nTask:\n{task}"
-        
+
         result = self.router.call(prompt, TaskType.CODING)
-        
+
         console.print(f"[green]✓ Code generated[/green]")
         return result
-    
-    def fix(
-        self, 
-        code: str, 
-        error: str,
-        language: str = "python"
-    ) -> str:
+
+    def fix(self, code: str, error: str, language: str = "python") -> str:
         """
         Fix code based on error message
-        
+
         Args:
             code: The buggy code
             error: Error message or description
             language: Programming language
-            
+
         Returns:
             Fixed code
         """
         console.print(f"[bold yellow]🔧 Coder fixing bug...[/bold yellow]")
-        
+
         prompt = f"""{self.SYSTEM_PROMPT}
 
 The following {language} code has an error:
@@ -119,20 +114,20 @@ Error:
 {error}
 
 Please fix the code and explain what was wrong."""
-        
+
         result = self.router.call(prompt, TaskType.CODING)
-        
+
         console.print(f"[green]✓ Code fixed[/green]")
         return result
-    
+
     def explain(self, code: str, language: str = "python") -> str:
         """
         Explain what a piece of code does
-        
+
         Args:
             code: Code to explain
             language: Programming language
-            
+
         Returns:
             Explanation
         """
@@ -146,14 +141,11 @@ Explain:
 1. What the code does overall
 2. How it works step by step
 3. Any important patterns or techniques used"""
-        
+
         return self.router.call(prompt, TaskType.GENERAL)
-    
+
     def __call__(
-        self, 
-        task: str, 
-        language: str = "python",
-        context: Optional[str] = None
+        self, task: str, language: str = "python", context: Optional[str] = None
     ) -> str:
         """Make Coder callable"""
         return self.code(task, language, context)
