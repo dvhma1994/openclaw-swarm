@@ -19,6 +19,10 @@ A hybrid multi-agent system combining the best ideas from top open-source projec
 - **Experience Learning** - Learn from successes and failures
 - **Swarm Intelligence** - Emergent coordination
 - **Arabic Support** - Works with Arabic prompts
+- **Web Search** - DuckDuckGo integration (free)
+- **Web Fetch** - HTTP + HTML-to-markdown
+- **Provider Profiles** - Save multiple AI provider configs
+- **Agent Router** - Route different agents to different models
 
 ## Models Used
 

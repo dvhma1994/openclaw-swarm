@@ -12,11 +12,13 @@ from .multi_tier_memory import MultiTierMemory, WorkingMemory, EpisodicMemory, S
 from .plugins import PluginManager, PluginType, create_plugin_manager
 from .swarm import SwarmCoordinator, SwarmAgent, SwarmTask, AgentRole, TaskPriority, run_swarm
 from .agents import Planner, Coder, Reviewer, Researcher
+from .web_search import WebSearch, SearchResult
+from .providers import ProviderManager, ProviderProfile, ProviderType, AgentRouter
 
 __all__ = [
     "Router",
     "TaskType",
-    "Orchestrator", 
+    "Orchestrator",
     "Memory",
     "MemoryEntry",
     "remember",
@@ -49,4 +51,10 @@ __all__ = [
     "Coder",
     "Reviewer",
     "Researcher",
+    "WebSearch",
+    "SearchResult",
+    "ProviderManager",
+    "ProviderProfile",
+    "ProviderType",
+    "AgentRouter",
 ]
