@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw HUD</title>
+<meta http-equiv="refresh" content="30">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'JetBrains Mono',monospace; background:#0d1117; color:#c9d1d9; padding:20px; }
+  .hud { max-width:1200px; margin:0 auto; }
+  .header { display:flex; justify-content:space-between; align-items:center;
+             padding:15px 20px; background:#161b22; border-radius:8px; margin-bottom:15px;
+             border:1px solid #30363d; }
+  .header h1 { font-size:20px; color:#58a6ff; }
+  .header .model { color:#7ee787; font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+           gap:12px; }
+  .card { background:#161b22; border:1px solid #30363d; border-radius:8px;
+           padding:16px; }
+  .card h3 { color:#58a6ff; margin-bottom:10px; font-size:14px; }
+  .bar { height:12px; background:#21262d; border-radius:6px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:6px; transition:width 0.5s; }
+  .bar-green { background:#238636; }
+  .bar-yellow { background:#d29922; }
+  .bar-red { background:#da3633; }
+  .stat { display:flex; justify-content:space-between; padding:4px 0;
+           font-size:13px; border-bottom:1px solid #21262d; }
+  .stat .label { color:#8b949e; }
+  .stat .value { color:#c9d1d9; font-weight:600; }
+  .agents { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+  .agent-badge { background:#1f6feb33; color:#58a6ff; padding:2px 8px;
+                  border-radius:4px; font-size:12px; }
+  footer { text-align:center; margin-top:20px; color:#484f58; font-size:12px; }
+</style>
+</head><body>
+<div class="hud">
+  <div class="header">
+    <div><h1>OpenClaw HUD</h1>
+         <span class="model">Test | Test</span></div>
+    <div style="text-align:right">
+      <div style="font-size:12px;color:#8b949e">Session: N/A</div>
+      <div style="font-size:12px;color:#8b949e">Duration: 0.0m</div>
+      <div style="font-size:12px;color:#8b949e">Updated: 2026-04-21T22:48:09</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Context Window -->
+    <div class="card">
+      <h3>Context Window</h3>
+      <div class="bar"><div class="bar-fill bar-yellow"
+        style="width:50%"></div></div>
+      <div class="stat"><span class="label">Used</span>
+        <span class="value">0 / 0 (50.0%)</span></div>
+    </div>
+
+    <!-- Budget -->
+    <div class="card">
+      <h3>Budget & Cost</h3>
+      <div class="bar"><div class="bar-fill bar-green"
+        style="width:0.0%"></div></div>
+      <div class="stat"><span class="label">Daily</span>
+        <span class="value">$0.00 / $10</span></div>
+      <div class="stat"><span class="label">Session Total</span>
+        <span class="value">$0.0000</span></div>
+      <div class="stat"><span class="label">Tokens</span>
+        <span class="value">0 (P:0 C:0)</span></div>
+    </div>
+
+    <!-- Tools -->
+    <div class="card">
+      <h3>Tool Activity</h3>
+      <div class="stat"><span class="label">Reads</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Edits</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Searches</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Bash</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Writes</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">MCP</span><span class="value">0</span></div>
+    </div>
+
+    <!-- Evolution Engine -->
+    <div class="card">
+      <h3>Evolution Engine</h3>
+      <div class="stat"><span class="label">Generation</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Mutations</span><span class="value">0</span></div>
+      <div class="stat"><span class="label">Promotions</span><span class="value">0</span></div>
+    </div>
+
+    <!-- Swarm -->
+    <div class="card">
+      <h3>Swarm</h3>
+      <div class="stat"><span class="label">Agents</span><span class="value">4</span></div>
+      <div class="stat"><span class="label">Tasks</span><span class="value">0</span></div>
+    </div>
+
+    <!-- Memory -->
+    <div class="card">
+      <h3>Memory</h3>
+      <div class="stat"><span class="label">Auto</span><span class="value">4</span></div>
+      <div class="stat"><span class="label">Conscious</span><span class="value">4</span></div>
+      <div class="stat"><span class="label">KG Nodes</span><span class="value">6</span></div>
+    </div>
+
+    <!-- Credentials -->
+    <div class="card">
+      <h3>Credentials</h3>
+      <div class="stat"><span class="label">Active / Total</span>
+        <span class="value">3 / 3</span></div>
+    </div>
+
+    <!-- Todo -->
+    <div class="card">
+      <h3>Todo Progress</h3>
+      <div class="bar"><div class="bar-fill bar-green"
+        style="width:0%"></div></div>
+      <div class="stat"><span class="label">Completed</span>
+        <span class="value">0 / 0</span></div>
+    </div>
+  </div>
+
+  <!-- Active Agents -->
+  <div class="card" style="margin-top:12px">
+    <h3>Active Agents</h3>
+    <div class="agents">
+      <span style="color:#484f58">None active</span>
+    </div>
+  </div>
+
+  <footer>OpenClaw HUD | Auto-refresh: 30s | Git: </footer>
+</div>
+</body></html>
