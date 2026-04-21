@@ -64,6 +64,14 @@ from .rag import (
     SimpleEmbedder,
     VectorStore,
 )
+from .task_queue import (
+    TaskQueue,
+    Task,
+    TaskStatus,
+    TaskPriority,
+    TaskScheduler,
+    Worker,
+)
 
 __all__ = [
     "Router",
@@ -140,4 +148,10 @@ __all__ = [
     "TextChunker",
     "SimpleEmbedder",
     "VectorStore",
+    "TaskQueue",
+    "Task",
+    "TaskStatus",
+    "TaskPriority",
+    "TaskScheduler",
+    "Worker",
 ]
