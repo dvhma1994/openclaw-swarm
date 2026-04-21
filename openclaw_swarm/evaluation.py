@@ -51,8 +51,8 @@ class MetricResult:
 class EvaluationResult:
     """Result of an evaluation run"""
 
-    id: str = ""
-    name: str = ""
+    name: str
+    id: str = field(default="")
     metrics: List[MetricResult] = field(default_factory=list)
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
