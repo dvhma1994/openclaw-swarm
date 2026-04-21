@@ -310,5 +310,26 @@ def anonymize_cmd(
     console.print(f"\n[dim]Replaced {len(result.entities)} PII entities[/dim]")
 
 
+@app.command()
+def dashboard(
+    port: int = typer.Option(8000, "--port", "-p", help="Dashboard port"),
+    host: str = typer.Option("0.0.0.0", "--host", "-h", help="Dashboard host"),
+):
+    """Launch web dashboard"""
+    from .dashboard import run_server
+    
+    console.print(Panel.fit(
+        f"[bold blue]OpenClaw Swarm Dashboard[/bold blue]\n[dim]http://{host}:{port}/dashboard[/dim]",
+        border_style="blue"
+    ))
+    
+    console.print("\n[yellow]Press Ctrl+C to stop[/yellow]")
+    
+    try:
+        run_server(host=host, port=port)
+    except KeyboardInterrupt:
+        console.print("\n[green]Dashboard stopped[/green]")
+
+
 if __name__ == "__main__":
     app()
