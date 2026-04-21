@@ -31,5 +31,9 @@ dev = [
 swarm = "openclaw_swarm.cli:app"
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["openclaw_swarm*"]

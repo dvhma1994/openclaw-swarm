@@ -13,7 +13,7 @@ from .router import Router, TaskType
 
 app = typer.Typer(
     name="swarm",
-    help="🦀 OpenClaw Swarm - Multi-Agent AI System",
+    help="OpenClaw Swarm - Multi-Agent AI System",
     add_completion=False
 )
 console = Console()
@@ -30,7 +30,7 @@ def run(
     orchestrator = Orchestrator()
     
     console.print(Panel.fit(
-        f"[bold blue]🦀 OpenClaw Swarm[/bold blue]\n[dim]Processing: {prompt[:50]}...[/dim]",
+        f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Processing: {prompt[:50]}...[/dim]",
         border_style="blue"
     ))
     
@@ -59,7 +59,7 @@ def agents():
     """List available agents"""
     orchestrator = Orchestrator()
     
-    table = Table(title="🤖 Available Agents")
+    table = Table(title="Available Agents")
     table.add_column("ID", style="cyan")
     table.add_column("Name", style="green")
     table.add_column("Role", style="yellow")
@@ -81,7 +81,7 @@ def models():
     """List configured models"""
     router = Router()
     
-    table = Table(title="🧠 Configured Models")
+    table = Table(title="Configured Models")
     table.add_column("Task Type", style="cyan")
     table.add_column("Primary Model", style="green")
     table.add_column("Fallback Model", style="yellow")
