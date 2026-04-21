@@ -180,5 +180,112 @@ def version():
     console.print(f"[bold blue]OpenClaw Swarm[/bold blue] version [green]{__version__}[/green]")
 
 
+@app.command()
+def memory(
+    action: str = typer.Argument(..., help="Action: stats, clear, export"),
+    filepath: str = typer.Option(None, "--file", "-f", help="File path for export/import"),
+):
+    """Manage agent memory"""
+    from .memory import Memory
+    
+    mem = Memory()
+    
+    if action == "stats":
+        stats = mem.get_stats()
+        table = Table(title="Memory Statistics")
+        table.add_column("Metric", style="cyan")
+        table.add_column("Value", style="green")
+        
+        for key, value in stats.items():
+            if isinstance(value, dict):
+                table.add_row(key, f"{len(value)} items")
+            else:
+                table.add_row(key, str(value))
+        
+        console.print(table)
+    
+    elif action == "clear":
+        count = mem.clear_old(days=0)
+        console.print(f"[green]Cleared {count} memories[/green]")
+    
+    elif action == "export":
+        if not filepath:
+            filepath = "memories_export.json"
+        mem.export(filepath)
+    
+    else:
+        console.print(f"[red]Unknown action: {action}[/red]")
+
+
+@app.command()
+def experience(
+    action: str = typer.Argument(..., help="Action: stats, advice, export"),
+    task_type: str = typer.Option("general", "--task", "-t", help="Task type for advice"),
+    filepath: str = typer.Option(None, "--file", "-f", help="File path for export"),
+):
+    """Manage experience database"""
+    from .experience import ExperienceDB
+    
+    exp = ExperienceDB()
+    
+    if action == "stats":
+        stats = exp.get_stats()
+        table = Table(title="Experience Statistics")
+        table.add_column("Metric", style="cyan")
+        table.add_column("Value", style="green")
+        
+        for key, value in stats.items():
+            if isinstance(value, list):
+                table.add_row(key, f"{len(value)} types")
+            else:
+                table.add_row(key, str(value))
+        
+        console.print(table)
+    
+    elif action == "advice":
+        advice = exp.get_advice(task_type)
+        
+        if advice["best_practices"]:
+            console.print("[bold green]Best Practices:[/bold green]")
+            for practice in advice["best_practices"]:
+                console.print(f"  - {practice}")
+        
+        if advice["warnings"]:
+            console.print("[bold yellow]Warnings:[/bold yellow]")
+            for warning in advice["warnings"]:
+                console.print(f"  - {warning}")
+    
+    elif action == "export":
+        if not filepath:
+            filepath = "rules_export.json"
+        exp.export_rules(filepath)
+    
+    else:
+        console.print(f"[red]Unknown action: {action}[/red]")
+
+
+@app.command()
+def swarm(
+    task: str = typer.Argument(..., help="Task for the swarm"),
+    decompose: bool = typer.Option(True, "--decompose/--no-decompose", help="Decompose complex tasks"),
+    workers: int = typer.Option(3, "--workers", "-w", help="Max parallel workers"),
+):
+    """Run a swarm of agents on a task"""
+    from .swarm import SwarmCoordinator
+    
+    console.print(Panel.fit(
+        f"[bold blue]OpenClaw Swarm[/bold blue]\n[dim]Task: {task[:50]}...[/dim]",
+        border_style="blue"
+    ))
+    
+    coordinator = SwarmCoordinator()
+    result = coordinator.run_swarm(task, max_workers=workers, decompose=decompose)
+    
+    console.print("\n[bold green]=== Final Result ===[/bold green]")
+    console.print(Markdown(result["final_result"]))
+    
+    console.print(f"\n[dim]Completed {result['completed']}/{result['subtasks']} subtasks[/dim]")
+
+
 if __name__ == "__main__":
     app()
