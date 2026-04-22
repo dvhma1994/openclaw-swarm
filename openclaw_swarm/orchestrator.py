@@ -3,14 +3,15 @@ Orchestrator - Multi-Agent Coordination
 Inspired by ai-orchestrator - Role-based execution
 """
 
-import os
 import json
-from typing import Optional, Dict, Any, List, Callable
-from dataclasses import dataclass, field
+import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import yaml
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from rich.console import Console
 from rich.progress import Progress
 
@@ -59,7 +60,7 @@ class Orchestrator:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 return yaml.safe_load(f)
         except FileNotFoundError:
-            console.print(f"[yellow]Config not found, using defaults[/yellow]")
+            console.print("[yellow]Config not found, using defaults[/yellow]")
             return self._default_config()
 
     def _default_config(self) -> Dict[str, Any]:

@@ -3,11 +3,11 @@ OpenClaw Swarm - Streaming Support
 Real-time token output and streaming responses
 """
 
-import time
 import threading
-from typing import Callable, Optional, Generator, Any
+import time
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable, Generator, Optional
 
 
 class StreamState(Enum):

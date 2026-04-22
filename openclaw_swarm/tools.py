@@ -3,14 +3,14 @@ OpenClaw Swarm - Tool System
 Bash and file operations like OpenClaude
 """
 
+import json
 import os
 import subprocess
-import json
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Callable
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class ToolType(Enum):
@@ -444,7 +444,7 @@ class GrepTool(Tool):
 
                                 if len(results) >= max_results:
                                     break
-                except:
+                except Exception:
                     continue
 
                 if len(results) >= max_results:

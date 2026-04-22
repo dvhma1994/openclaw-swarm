@@ -3,12 +3,10 @@ OpenClaw Swarm - MCP (Model Context Protocol) Support
 Compatible with Claude Code MCP protocol
 """
 
-import json
 import inspect
-from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
-import asyncio
+from typing import Any, Callable, Dict, List, Optional
 
 
 class MCPMessageType(Enum):
@@ -177,7 +175,7 @@ class MCPServer:
     async def _handle_prompts_get(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle prompts/get request"""
         name = params.get("name")
-        arguments = params.get("arguments", {})
+        params.get("arguments", {})
 
         if name not in self.prompts:
             return {"error": f"Prompt not found: {name}"}

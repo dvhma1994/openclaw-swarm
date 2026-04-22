@@ -2,16 +2,15 @@
 Tests for Task Queue System
 """
 
-import pytest
 import time
 from datetime import datetime, timedelta
 
 from openclaw_swarm.task_queue import (
-    TaskQueue,
     Task,
-    TaskStatus,
     TaskPriority,
+    TaskQueue,
     TaskScheduler,
+    TaskStatus,
     Worker,
 )
 
@@ -355,13 +354,11 @@ class TestTaskQueueIntegration:
         """Test tasks are processed in priority order"""
         queue = TaskQueue()
 
-        task1 = queue.submit(name="low", description="test", priority=TaskPriority.LOW)
-        task2 = queue.submit(
+        queue.submit(name="low", description="test", priority=TaskPriority.LOW)
+        queue.submit(
             name="critical", description="test", priority=TaskPriority.CRITICAL
         )
-        task3 = queue.submit(
-            name="normal", description="test", priority=TaskPriority.NORMAL
-        )
+        queue.submit(name="normal", description="test", priority=TaskPriority.NORMAL)
 
         # Get pending tasks (priority queue doesn't guarantee order in list)
         pending = queue.get_pending_tasks()

@@ -2,18 +2,17 @@
 Tests for RAG System
 """
 
-import pytest
-import tempfile
 import os
+import tempfile
 
 from openclaw_swarm.rag import (
-    Document,
     Chunk,
-    SearchResult,
-    TextChunker,
-    SimpleEmbedder,
-    VectorStore,
+    Document,
     RAGSystem,
+    SearchResult,
+    SimpleEmbedder,
+    TextChunker,
+    VectorStore,
 )
 
 
@@ -334,7 +333,7 @@ class TestRAGSystem:
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create and save
             rag1 = RAGSystem(storage_path=tmpdir)
-            doc = rag1.add_document("Test content for persistence")
+            rag1.add_document("Test content for persistence")
 
             # Create new instance and load
             rag2 = RAGSystem(storage_path=tmpdir)

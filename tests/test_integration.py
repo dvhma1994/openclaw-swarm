@@ -2,20 +2,21 @@
 Integration Tests - End-to-end testing
 """
 
-import pytest
 import os
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
 
+import pytest
+
 from openclaw_swarm import (
-    SwarmCoordinator,
-    MultiTierMemory,
-    ExperienceDB,
     Anonymizer,
-    Router,
-    Orchestrator,
+    ExperienceDB,
     Memory,
+    MultiTierMemory,
+    Orchestrator,
+    Router,
+    SwarmCoordinator,
 )
 
 # Skip tests that require Ollama in CI
@@ -89,7 +90,7 @@ class TestIntegration:
         )
 
         # Run compression
-        result = mtm.run_compression()
+        mtm.run_compression()
 
         # Recall from all tiers
         recall = mtm.recall("API")
@@ -123,7 +124,7 @@ class TestIntegration:
         assert task_result is not None
 
         # De-anonymize response if needed
-        restored = anon.de_anonymize(task_result["final_result"], result.mapping)
+        anon.de_anonymize(task_result["final_result"], result.mapping)
         # Should work without crashing
 
     def test_experience_learning_loop(self, temp_dir):

@@ -2,21 +2,20 @@
 Tests for Tool System
 """
 
-import pytest
-import tempfile
 import os
+import tempfile
 from pathlib import Path
 
 from openclaw_swarm.tools import (
-    ToolType,
-    ToolResult,
     BashTool,
-    ReadTool,
-    WriteTool,
     EditTool,
-    GrepTool,
     GlobTool,
+    GrepTool,
+    ReadTool,
     ToolRegistry,
+    ToolResult,
+    ToolType,
+    WriteTool,
 )
 
 

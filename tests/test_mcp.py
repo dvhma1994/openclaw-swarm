@@ -3,19 +3,18 @@ Tests for MCP Support
 """
 
 import pytest
-import asyncio
 
 from openclaw_swarm.mcp import (
-    MCPServer,
     MCPClient,
-    MCPTool,
-    MCPResource,
-    MCPPrompt,
     MCPMessageType,
+    MCPPrompt,
+    MCPResource,
+    MCPServer,
+    MCPTool,
     create_mcp_server,
-    create_swarm_tools,
-    create_swarm_resources,
     create_swarm_prompts,
+    create_swarm_resources,
+    create_swarm_tools,
 )
 
 

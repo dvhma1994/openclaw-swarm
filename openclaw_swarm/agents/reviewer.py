@@ -3,6 +3,7 @@ Reviewer Agent - Reviews and improves code
 """
 
 from typing import Optional
+
 from rich.console import Console
 
 from ..router import Router, TaskType
@@ -69,7 +70,7 @@ Focus on practical issues that matter. Don't nitpick minor style preferences."""
         Returns:
             Review feedback
         """
-        console.print(f"[bold purple]🔍 Reviewer analyzing code...[/bold purple]")
+        console.print("[bold purple]🔍 Reviewer analyzing code...[/bold purple]")
 
         prompt = self.SYSTEM_PROMPT
         prompt += f"\n\nLanguage: {language}"
@@ -81,7 +82,7 @@ Focus on practical issues that matter. Don't nitpick minor style preferences."""
 
         result = self.router.call(prompt, TaskType.REASONING)
 
-        console.print(f"[green]✓ Review complete[/green]")
+        console.print("[green]✓ Review complete[/green]")
         return result
 
     def quick_check(self, code: str, language: str = "python") -> str:

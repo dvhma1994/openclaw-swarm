@@ -3,11 +3,10 @@ OpenClaw Swarm - Web Search & Fetch
 Supports DuckDuckGo (free) and Firecrawl (optional)
 """
 
-import json
-import urllib.request
 import urllib.parse
-from typing import List, Dict, Any, Optional
+import urllib.request
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

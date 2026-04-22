@@ -2,7 +2,8 @@
 Researcher Agent - Searches and summarizes information
 """
 
-from typing import Optional, List
+from typing import List, Optional
+
 from rich.console import Console
 
 from ..router import Router, TaskType
@@ -80,7 +81,7 @@ Be accurate and thorough. If you're uncertain, say so."""
 
         result = self.router.call(prompt, TaskType.GENERAL)
 
-        console.print(f"[green]✓ Research complete[/green]")
+        console.print("[green]✓ Research complete[/green]")
         return result
 
     def compare(self, items: List[str], criteria: Optional[List[str]] = None) -> str:

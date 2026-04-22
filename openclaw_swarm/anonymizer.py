@@ -3,14 +3,15 @@ Anonymizer - Privacy-first PII protection
 Inspired by: zeroc00I/LLM-anonymization
 """
 
+import hashlib
+import json
 import os
 import re
-import json
-from typing import Optional, Dict, Any, List, Tuple
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from dataclasses import dataclass, asdict
-import hashlib
+from typing import Dict, List, Optional, Tuple
+
 from rich.console import Console
 
 console = Console()

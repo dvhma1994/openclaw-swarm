@@ -3,13 +3,14 @@ Memory System - Persistent Memory for Agents
 Inspired by: emipanelliok/engram, rcortx/kiwiq
 """
 
-import os
+import hashlib
 import json
-from typing import Optional, Dict, Any, List
+import os
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from dataclasses import dataclass, asdict
-import hashlib
+from typing import Any, Dict, List, Optional
+
 from rich.console import Console
 
 console = Console()

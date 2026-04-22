@@ -3,14 +3,14 @@ OpenClaw Swarm - Task Queue System
 Priority-based task queue with workers
 """
 
-import time
 import threading
-from typing import Dict, List, Any, Optional, Callable
+import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from queue import PriorityQueue
-import uuid
+from typing import Any, Callable, Dict, List, Optional
 
 
 class TaskStatus(Enum):
@@ -245,7 +245,7 @@ class TaskQueue:
 
                 self._process_task(task, worker)
 
-            except:
+            except Exception:
                 # Queue empty or timeout
                 continue
 

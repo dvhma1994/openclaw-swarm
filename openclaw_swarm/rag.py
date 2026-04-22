@@ -3,13 +3,12 @@ OpenClaw Swarm - RAG (Retrieval-Augmented Generation) System
 Vector-based document retrieval and generation
 """
 
-import os
-import json
 import hashlib
-from typing import List, Dict, Any, Optional, Tuple
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -84,13 +83,15 @@ class TextChunker:
                 chunks.append(chunk)
 
             # Move start with overlap
-            start = end - self.chunk_overlap
-            if start < 0:
-                start = 0
+            new_start = end - self.chunk_overlap
+            if new_start < 0:
+                new_start = 0
 
-            # Avoid infinite loop
-            if start >= end:
-                start = end
+            # Avoid infinite loop: ensure we always make forward progress
+            if new_start <= start:
+                new_start = end
+
+            start = new_start
 
         return chunks
 

@@ -2,20 +2,16 @@
 OpenClaw Swarm Dashboard - FastAPI Backend
 """
 
-import os
-import json
 from datetime import datetime
-from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from .memory import Memory
 from .experience import ExperienceDB
+from .memory import Memory
 from .swarm import SwarmCoordinator
 
 # Initialize FastAPI
@@ -199,7 +195,7 @@ DASHBOARD_HTML = """
 <body>
     <div class="container">
         <h1>OpenClaw Swarm Dashboard</h1>
-        
+
         <div id="status">
             <div class="status-item">
                 <div class="status-value" id="total-memories">-</div>
@@ -218,7 +214,7 @@ DASHBOARD_HTML = """
                 <div class="status-label">Agents</div>
             </div>
         </div>
-        
+
         <div class="grid">
             <div class="card">
                 <h2>Run Task</h2>
@@ -226,34 +222,34 @@ DASHBOARD_HTML = """
                 <button class="btn" onclick="runTask()">Run Swarm</button>
                 <div class="task-result" id="task-result"></div>
             </div>
-            
+
             <div class="card">
                 <h2>Memory</h2>
                 <div id="memory-stats"></div>
             </div>
-            
+
             <div class="card">
                 <h2>Experience</h2>
                 <div id="experience-stats"></div>
             </div>
-            
+
             <div class="card">
                 <h2>Agents</h2>
                 <div id="agents-list"></div>
             </div>
         </div>
     </div>
-    
+
     <script>
         async function loadStatus() {
             const response = await fetch('/api/status');
             const data = await response.json();
-            
+
             document.getElementById('total-memories').textContent = data.memory.total_memories;
             document.getElementById('total-experiences').textContent = data.experience.total_experiences;
             document.getElementById('success-rate').textContent = (data.experience.success_rate * 100).toFixed(0) + '%';
             document.getElementById('active-agents').textContent = Object.keys(data.swarm.agents).length;
-            
+
             // Memory stats
             const memDiv = document.getElementById('memory-stats');
             memDiv.innerHTML = `
@@ -261,7 +257,7 @@ DASHBOARD_HTML = """
                 <div class="stat"><span class="stat-label">Successful</span><span class="stat-value">${data.memory.successful}</span></div>
                 <div class="stat"><span class="stat-label">Agents</span><span class="stat-value">${data.memory.agents}</span></div>
             `;
-            
+
             // Experience stats
             const expDiv = document.getElementById('experience-stats');
             expDiv.innerHTML = `
@@ -269,7 +265,7 @@ DASHBOARD_HTML = """
                 <div class="stat"><span class="stat-label">Success Rate</span><span class="stat-value">${(data.experience.success_rate * 100).toFixed(0)}%</span></div>
                 <div class="stat"><span class="stat-label">Lessons</span><span class="stat-value">${data.experience.total_lessons}</span></div>
             `;
-            
+
             // Agents list
             const agentsDiv = document.getElementById('agents-list');
             const agentsHTML = Object.entries(data.swarm.agents).map(([id, agent]) => `
@@ -277,14 +273,14 @@ DASHBOARD_HTML = """
             `).join('');
             agentsDiv.innerHTML = agentsHTML;
         }
-        
+
         async function runTask() {
             const task = document.getElementById('task-input').value;
             if (!task) return;
-            
+
             const resultDiv = document.getElementById('task-result');
             resultDiv.textContent = 'Running...';
-            
+
             try {
                 const response = await fetch('/api/swarm/run', {
                     method: 'POST',
@@ -298,7 +294,7 @@ DASHBOARD_HTML = """
                 resultDiv.textContent = 'Error: ' + error.message;
             }
         }
-        
+
         // Load on start
         loadStatus();
         setInterval(loadStatus, 5000);

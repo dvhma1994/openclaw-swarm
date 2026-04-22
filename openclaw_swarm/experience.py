@@ -3,13 +3,14 @@ Experience Learning - Self-improvement from past experiences
 Inspired by: ChanningLua/prax-agent, faveos8758/reflexion-agent-ts
 """
 
-import os
+import hashlib
 import json
-from typing import Optional, Dict, Any, List, Tuple
+import os
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from dataclasses import dataclass, asdict
-import hashlib
+from typing import Any, Dict, List, Optional, Tuple
+
 from rich.console import Console
 
 console = Console()
@@ -354,7 +355,6 @@ class ExperienceDB:
         )
 
         # Find relevant lesson and update
-        lesson_text = f"{action}"
         for lesson_id, lesson in self.lessons.items():
             if action.lower() in lesson.rule.lower():
                 if success:
@@ -375,7 +375,7 @@ class ExperienceDB:
 
         lessons_count = len(self.lessons)
         high_confidence_lessons = sum(
-            1 for l in self.lessons.values() if l.confidence >= 0.8
+            1 for lesson in self.lessons.values() if lesson.confidence >= 0.8
         )
 
         task_types = set(e.task_type for e in self.experiences.values())
@@ -399,7 +399,7 @@ class ExperienceDB:
         """Export learned rules to file"""
         rules = {"best_practices": {}, "warnings": {}}
 
-        for task_type in set(l.task_type for l in self.lessons.values()):
+        for task_type in set(lesson.task_type for lesson in self.lessons.values()):
             rules["best_practices"][task_type] = self.get_best_practices(task_type)
             rules["warnings"][task_type] = self.get_warnings(task_type)
 

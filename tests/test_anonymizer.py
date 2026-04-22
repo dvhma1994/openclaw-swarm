@@ -2,17 +2,16 @@
 Tests for Anonymizer
 """
 
-import pytest
-import tempfile
 import shutil
-from pathlib import Path
+import tempfile
+
+import pytest
 
 from openclaw_swarm.anonymizer import (
     Anonymizer,
-    PIIEntity,
     anonymize,
-    de_anonymize,
     check_pii,
+    de_anonymize,
 )
 
 
@@ -143,7 +142,7 @@ class TestAnonymizer:
         processed, mapping = anon.process_prompt(prompt)
 
         # Simulate LLM response with token
-        response = f"Successfully connected to <PII_IP_ADDRESS_1>"
+        response = "Successfully connected to <PII_IP_ADDRESS_1>"
         restored = anon.process_response(response, mapping)
 
         assert "192.168.1.1" in restored

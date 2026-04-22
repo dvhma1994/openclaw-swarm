@@ -3,14 +3,15 @@ Tests for Hooks functionality
 """
 
 import pytest
+
 from openclaw_swarm.hooks import (
-    HookType,
-    HookContext,
-    HookResult,
     Hook,
-    HookManager,
-    on_event,
     HookBuilder,
+    HookContext,
+    HookManager,
+    HookResult,
+    HookType,
+    on_event,
 )
 
 

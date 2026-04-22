@@ -4,11 +4,12 @@ Inspired by dario - Single endpoint, multiple providers
 """
 
 import os
-from typing import Optional, Dict, Any
 from dataclasses import dataclass
 from enum import Enum
-import yaml
+from typing import Any, Dict, Optional
+
 import ollama
+import yaml
 from rich.console import Console
 
 console = Console()

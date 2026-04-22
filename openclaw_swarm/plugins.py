@@ -2,14 +2,14 @@
 Plugin System - Easy extensions for OpenClaw Swarm
 """
 
-import os
-import json
 import importlib.util
-from typing import Optional, Dict, Any, List, Callable
-from datetime import datetime
-from pathlib import Path
-from dataclasses import dataclass, asdict
+import json
+import os
+from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
+
 from rich.console import Console
 
 console = Console()

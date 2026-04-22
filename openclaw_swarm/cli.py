@@ -4,9 +4,9 @@ OpenClaw Swarm CLI
 
 import typer
 from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.table import Table
 
 from .orchestrator import Orchestrator
 from .router import Router, TaskType

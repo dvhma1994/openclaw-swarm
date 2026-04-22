@@ -2,18 +2,15 @@
 Tests for Evaluation Metrics
 """
 
-import pytest
-import time
-
 from openclaw_swarm.evaluation import (
-    MetricType,
-    MetricResult,
+    Benchmark,
     EvaluationResult,
     Evaluator,
-    Benchmark,
+    MetricResult,
+    MetricType,
+    create_cost_benchmark,
     create_performance_benchmark,
     create_quality_benchmark,
-    create_cost_benchmark,
 )
 
 

@@ -2,17 +2,18 @@
 Performance Benchmarks for OpenClaw Swarm
 """
 
-import time
 import os
+import time
+
 import pytest
+
 from openclaw_swarm import (
-    Router,
-    Orchestrator,
-    Memory,
-    ExperienceDB,
     Anonymizer,
+    ExperienceDB,
+    Memory,
     MultiTierMemory,
-    SwarmCoordinator,
+    Orchestrator,
+    Router,
 )
 
 # Skip tests that require Ollama in CI
@@ -38,8 +39,8 @@ class TestPerformance:
 
     def test_memory_store_performance(self, benchmark):
         """Benchmark memory store"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -61,8 +62,8 @@ class TestPerformance:
 
     def test_memory_search_performance(self, benchmark):
         """Benchmark memory search"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -88,8 +89,8 @@ class TestPerformance:
 
     def test_experience_record_performance(self, benchmark):
         """Benchmark experience recording"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -127,8 +128,6 @@ class TestPerformance:
         result = benchmark(anonymize_text)
         assert "support@example.com" not in result.anonymized
 
-        shutil.rmtree(temp_dir) if "temp_dir" in dir() else None
-
     def test_anonymizer_pii_detection(self, benchmark):
         """Benchmark PII detection"""
         anon = Anonymizer()
@@ -143,8 +142,8 @@ class TestPerformance:
 
     def test_working_memory_performance(self, benchmark):
         """Benchmark working memory"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -162,8 +161,8 @@ class TestPerformance:
 
     def test_episodic_memory_performance(self, benchmark):
         """Benchmark episodic memory"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -187,8 +186,8 @@ class TestPerformance:
 
     def test_semantic_memory_performance(self, benchmark):
         """Benchmark semantic memory"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -211,8 +210,8 @@ class TestPerformance:
 
     def test_multi_tier_memory_recalls(self, benchmark):
         """Benchmark multi-tier memory recall"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -243,8 +242,8 @@ class TestPerformance:
 
     def test_plugin_manager_stats(self, benchmark):
         """Benchmark plugin manager"""
-        import tempfile
         import shutil
+        import tempfile
 
         temp_dir = tempfile.mkdtemp()
 
@@ -266,8 +265,8 @@ class TestBenchmarks:
 
     @pytest.fixture
     def temp_dir(self):
-        import tempfile
         import shutil
+        import tempfile
 
         temp = tempfile.mkdtemp()
         yield temp

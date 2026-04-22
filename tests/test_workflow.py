@@ -2,16 +2,17 @@
 Tests for Workflow Engine
 """
 
+import json
+
 import pytest
-from datetime import datetime
 
 from openclaw_swarm.workflow import (
-    WorkflowEngine,
-    Workflow,
-    WorkflowStep,
-    WorkflowStatus,
-    StepStatus,
     ConditionType,
+    StepStatus,
+    Workflow,
+    WorkflowEngine,
+    WorkflowStatus,
+    WorkflowStep,
     create_code_review_workflow,
     create_data_pipeline_workflow,
 )
@@ -438,6 +439,3 @@ class TestWorkflowDependencies:
         # Steps 1 and 2 have no dependencies
         # Step 3 depends on both
         assert workflow.steps[2].dependencies == ["s1", "s2"]
-
-
-import json

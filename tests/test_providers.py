@@ -2,16 +2,14 @@
 Tests for Provider Profiles functionality
 """
 
-import pytest
 import tempfile
-import json
 from pathlib import Path
 
 from openclaw_swarm.providers import (
-    ProviderType,
-    ProviderProfile,
-    ProviderManager,
     AgentRouter,
+    ProviderManager,
+    ProviderProfile,
+    ProviderType,
 )
 
 

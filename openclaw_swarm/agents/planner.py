@@ -2,8 +2,9 @@
 Planner Agent - Plans and breaks down tasks
 """
 
-from typing import Optional, List
 from dataclasses import dataclass
+from typing import List, Optional
+
 from rich.console import Console
 
 from ..router import Router, TaskType
@@ -70,7 +71,7 @@ Be concise but thorough. Focus on practical implementation steps."""
         Returns:
             Planned steps as string
         """
-        console.print(f"[bold blue]📋 Planner analyzing task...[/bold blue]")
+        console.print("[bold blue]📋 Planner analyzing task...[/bold blue]")
 
         prompt = self.SYSTEM_PROMPT
         if context:
@@ -79,7 +80,7 @@ Be concise but thorough. Focus on practical implementation steps."""
 
         result = self.router.call(prompt, TaskType.REASONING)
 
-        console.print(f"[green]✓ Plan created[/green]")
+        console.print("[green]✓ Plan created[/green]")
         return result
 
     def parse_steps(self, plan_output: str) -> List[TaskStep]:

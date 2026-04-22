@@ -2,16 +2,13 @@
 Tests for Streaming functionality
 """
 
-import pytest
-import time
 from openclaw_swarm.streaming import (
-    StreamState,
-    StreamChunk,
-    StreamManager,
-    StreamGenerator,
-    TokenCounter,
     ProgressTracker,
     RateLimiter,
+    StreamChunk,
+    StreamManager,
+    StreamState,
+    TokenCounter,
 )
 
 

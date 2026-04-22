@@ -2,8 +2,7 @@
 Tests for Web Search functionality
 """
 
-import pytest
-from openclaw_swarm.web_search import WebSearch, SearchResult
+from openclaw_swarm.web_search import SearchResult, WebSearch
 
 
 class TestWebSearch:

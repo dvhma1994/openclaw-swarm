@@ -3,21 +3,20 @@ Swarm Intelligence - Emergent coordination from multiple agents
 Inspired by: 1Panel-dev/ClawSwarm, JackChen-me/open-multi-agent
 """
 
-import os
-import json
-from typing import Optional, Dict, Any, List, Callable
-from datetime import datetime
-from pathlib import Path
-from dataclasses import dataclass, asdict
-from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
+import os
+from dataclasses import dataclass
+from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 from rich.console import Console
 from rich.progress import Progress
 
-from .router import Router, TaskType
-from .memory import Memory
 from .experience import ExperienceDB
+from .memory import Memory
+from .router import Router, TaskType
 
 console = Console()
 
@@ -409,7 +408,7 @@ Please complete this task."""
                     remaining = [t for t in subtasks if t.id not in completed]
                     if remaining:
                         console.print(
-                            f"[yellow]Warning: Possible circular dependency, forcing execution[/yellow]"
+                            "[yellow]Warning: Possible circular dependency, forcing execution[/yellow]"
                         )
                         ready = remaining[:1]
                     else:

@@ -2,18 +2,16 @@
 Tests for Multi-tier Memory
 """
 
-import pytest
-import tempfile
 import shutil
-from pathlib import Path
-from datetime import datetime, timedelta
+import tempfile
+
+import pytest
 
 from openclaw_swarm.multi_tier_memory import (
-    WorkingMemory,
     EpisodicMemory,
-    SemanticMemory,
     MultiTierMemory,
-    MemoryTier,
+    SemanticMemory,
+    WorkingMemory,
 )
 
 

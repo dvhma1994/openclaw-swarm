@@ -2,16 +2,16 @@
 Tests for OpenClaw Swarm
 """
 
-import pytest
-import os
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
 
-from openclaw_swarm.memory import Memory, MemoryEntry
-from openclaw_swarm.experience import ExperienceDB, Experience, Lesson
-from openclaw_swarm.router import Router, TaskType
+import pytest
+
+from openclaw_swarm.experience import ExperienceDB
+from openclaw_swarm.memory import Memory
 from openclaw_swarm.orchestrator import Orchestrator
+from openclaw_swarm.router import Router, TaskType
 
 
 class TestMemory:

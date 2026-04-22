@@ -4,12 +4,12 @@ Quality metrics and benchmarking for agent performance
 """
 
 import json
-from typing import Dict, List, Any, Optional, Callable
+import statistics
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-import statistics
-import time
+from typing import Any, Callable, Dict, List, Optional
 
 
 class MetricType(Enum):
@@ -108,7 +108,7 @@ class Evaluator:
     def _measure_response_time(self, func: Callable, *args, **kwargs) -> MetricResult:
         """Measure response time in milliseconds"""
         start = time.time()
-        result = func(*args, **kwargs)
+        func(*args, **kwargs)
         end = time.time()
 
         duration_ms = (end - start) * 1000
@@ -182,7 +182,7 @@ class Evaluator:
 
         try:
             # Run function
-            func_result = func(*args, **kwargs)
+            func(*args, **kwargs)
             result.success = True
 
             # Collect metrics

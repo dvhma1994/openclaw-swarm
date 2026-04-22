@@ -2,17 +2,15 @@
 Tests for Plugin System
 """
 
-import pytest
-import tempfile
 import shutil
-import json
+import tempfile
 from pathlib import Path
+
+import pytest
 
 from openclaw_swarm.plugins import (
     PluginManager,
-    PluginType,
     PluginMetadata,
-    create_plugin_manager,
 )
 
 

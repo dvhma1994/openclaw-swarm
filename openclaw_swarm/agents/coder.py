@@ -3,6 +3,7 @@ Coder Agent - Writes and modifies code
 """
 
 from typing import Optional
+
 from rich.console import Console
 
 from ..router import Router, TaskType
@@ -85,7 +86,7 @@ Use proper indentation and formatting. Make the code production-ready."""
 
         result = self.router.call(prompt, TaskType.CODING)
 
-        console.print(f"[green]✓ Code generated[/green]")
+        console.print("[green]✓ Code generated[/green]")
         return result
 
     def fix(self, code: str, error: str, language: str = "python") -> str:
@@ -100,7 +101,7 @@ Use proper indentation and formatting. Make the code production-ready."""
         Returns:
             Fixed code
         """
-        console.print(f"[bold yellow]🔧 Coder fixing bug...[/bold yellow]")
+        console.print("[bold yellow]🔧 Coder fixing bug...[/bold yellow]")
 
         prompt = f"""{self.SYSTEM_PROMPT}
 
@@ -117,7 +118,7 @@ Please fix the code and explain what was wrong."""
 
         result = self.router.call(prompt, TaskType.CODING)
 
-        console.print(f"[green]✓ Code fixed[/green]")
+        console.print("[green]✓ Code fixed[/green]")
         return result
 
     def explain(self, code: str, language: str = "python") -> str:

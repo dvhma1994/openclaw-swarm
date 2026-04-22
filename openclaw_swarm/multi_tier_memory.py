@@ -4,14 +4,15 @@ Working + Episodic + Semantic Memory
 Inspired by: human memory architecture
 """
 
-import os
-import json
-from typing import Optional, Dict, Any, List
-from datetime import datetime, timedelta
-from pathlib import Path
-from dataclasses import dataclass, asdict, field
-from enum import Enum
 import hashlib
+import json
+import os
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 from rich.console import Console
 
 console = Console()
