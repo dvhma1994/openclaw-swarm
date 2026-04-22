@@ -1,6 +1,6 @@
 """OpenClaw Swarm - Multi-Agent AI System"""
 
-__version__ = "0.7.0"
+__version__ = "2.0.0"
 __author__ = "Mohamed Elsaeed"
 
 from .agents import Coder, Planner, Researcher, Reviewer
