@@ -1,81 +1,269 @@
-# Byte-compiled / optimized / DLL files
+# OpenClaw Swarm — Clean .gitignore (v3)
+# Generated during repo cleanup 2026-04-23
+
+# ── Sensitive credentials ──
+.env
+.env.*
+.env.local
+*.env
+!*.env.example
+**/.env
+
+*_token.json
+*creds*.json
+*credentials*.json
+*secret*.json
+youtube_creds.json
+client_secret.json
+gmail_token.json
+
+# ── Auth / Credentials ──
+credentials/
+identity/
+**/auth-profiles.json
+
+# ── Database (runtime) ──
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+lcm.db*
+
+# ── Memory (runtime) ──
+memory/*.sqlite
+memory/observations/
+memory/.dreams/short-term-recall.json
+memory/heartbeat-state.json
+
+# ── Logs / Cache / Temp ──
+logs/
+*.log
+*.log.*
+audit_logs/
+*.tmp
+*.bak
+*.bak.*
+*.pid
 __pycache__/
 *.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
 .pytest_cache/
+.coverage
+.cache
 
-# Translations
-*.mo
-*.pot
+# ── Runtime state ──
+exec-approvals.json
+update-check.json
+node.json
+session-pids.json
+claude-sessions.json
+agent_budgets.json
+debate_log.json
+trader_state.json
+trade_log.csv
+paper_trades.csv
+cost_usage.json
+drift_state.json
+observability_data/
+checkpoints/
+react_logs/
+output/
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE
+# ── IDE / OS ──
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# Data
-data/
-*.json
-!config/*.json
-
-# Logs
-logs/
-*.log
-
-# OS
 .DS_Store
 Thumbs.db
+Desktop.ini
+desktop.ini
+*.lnk
 
-# Local config
-config.local.yaml
-.env.local
+# ── Python ──
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# ── Node.js ──
+node_modules/
+
+# ── Model weights / large binaries ──
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.pkl
+*.bin
+*.joblib
+
+# ── Archives ──
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# ── Backups ──
+backups/
+!backups/.gitkeep
+
+# ── OpenClaude local settings ──
+.openclaude/
+.claude/settings.local.json
+
+# ── VBS scripts (runtime) ──
+*.vbs
+
+# ── Root HTML/ZIP reports ──
+/*.html
+/*.zip
+
+# ── Large directories (NOT part of core repo) ──
+workspaces/*/external/
+workspaces/*/github_trending_projects/
+workspaces/*/projects/
+workspaces/*/qdrant/
+workspaces/*/qdrant/storage/
+workspaces/*/hasabi/
+workspaces/*/skills/
+workspaces/*/video_project/
+workspaces/*/.git/
+workspaces/*/models/
+workspaces/*/models-cache/
+workspaces/*/chroma_db/
+workspaces/*/vector_db/
+workspaces/*/phantom-src/
+workspaces/*/notes/
+workspaces/*/main/
+workspaces/*/social-marketing-ai/
+workspaces/*/bypass_manager/
+workspaces/*/soudy-tech-complete.zip
+
+ecc/
+platform/
+sandboxes/
+cc/
+plugins/browser-voice-gateway/
+plugins/clawrouter/
+openhands/
+evoagentx/
+langbot/
+localai/
+postiz/
+chrome-debug/
+browser/
+canvas/
+media/
+completions/
+blockrun/
+github_trending_projects/
+projects/
+
+# ── Reports / Generated HTML ──
+workspaces/director/*_generator.js
+workspaces/director/neural_studio_*.html
+workspaces/director/studio_*.html
+workspaces/director/contentai_*.html
+workspaces/director/affiliate-*.html
+workspaces/director/*_landing*.html
+workspaces/director/cctv_*.html
+
+dashboards/*.html
+
+# ── CSV / Parquet data ──
+*.parquet
+*.csv.gz
+*.csv
+
+# ── Images / Screenshots ──
+*.png
+*.jpg
+*.jpeg
+workspaces/director/screenshot_ws2.png
+
+# ── Misc large workspaces ──
+workspaces/director/soudy-*.zip
+workspaces/director/soudy-v*/
+workspaces/director/soudytech-*/
+workspaces/director/everything-claude-code/
+workspaces/director/openclaw-dashboard/
+workspaces/director/repos/
+workspaces/director/system-prompts-and-models-of-ai-tools/
+workspaces/director/test_results/
+workspaces/director/dashboards/
+workspaces/director/reports/
+workspaces/director/scan_results/
+workspaces/director/security_scan_results/
+workspaces/director/test_mt5.py
+workspaces/director/phantom-src/
+workspaces/director/ultimate-bb/
+workspaces/director/Clawith/
+workspaces/director/flash-moe/
+workspaces/director/flash-moe-python/
+workspaces/director/finetune/*.gguf
+workspaces/director/finetune/.venv/
+workspaces/director/finetune/router_model_gguf_merged/
+workspaces/director/finetune/router_model_lora/
+workspaces/director/finetune/unsloth_compiled_cache/
+workspaces/director/unsloth_compiled_cache/
+workspaces/director/claude-code-leak/
+workspaces/director/mlruns/
+workspaces/director/phase*.parquet
+workspaces/director/phase*.csv
+workspaces/director/training_data/
+workspaces/director/audio/
+workspaces/director/pentagi/
+
+# ── Guardian logs ──
+guardian.log
+agentops.log
+gcm-diagnose.log
+
+# ── Audit / Constitution runtime ──
+workspaces/director/audit_log.jsonl
+workspaces/director/constitution_log.json
+
+# ── Subagents ──
+subagents/
+
+# ── Submodules / Large externals ──
+plugins/clawrouter
+plugins/browser-voice-gateway
+workspaces/director/Vibe-Trading
+workspaces/director/appflowy-cloud
+workspaces/director/external/agenticSeek
+workspaces/director/external/cashclaw
+workspaces/director/github_trending_projects/AI-Trader-v2
+workspaces/director/projects/metatron
+
+# ── Root runtime files ──
+openclaw.json
+.claude/settings.local.json
+node.cmd
+gateway.cmd
+gateway.pid
+start-gateway.bat
+start-gateway-hidden.vbs
+start-hidden.vbs
+start_guardian.vbs
+start_n8n.bat
+
+# ── Root CMD launchers ──
+coder-full-access.cmd
+openclaude-full-access.cmd
+openclaude-kimi-full-access.cmd
+
+# ── Old HTML reports ──
+PROJECT_REPORT.html
+SYSTEM_AUDIT_REPORT.html
+SYSTEM_OVERVIEW.html
+TOOLS_GUIDE.html
+backtest_report_*.html
