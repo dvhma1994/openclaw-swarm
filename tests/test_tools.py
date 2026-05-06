@@ -101,11 +101,13 @@ class TestBashTool:
         with tempfile.TemporaryDirectory() as tmpdir:
             # Create a file to verify cwd works
             test_file = os.path.join(tmpdir, "test.txt")
-            with open(test_file, "w") as f:
+            with open(test_file, "w", encoding="utf-8") as f:
                 f.write("test content")
 
-            # List files in the temp directory
-            result = tool.execute("ls" if os.name != "nt" else "dir /b", cwd=tmpdir)
+            # List files in the temp directory using python (works with shell=False)
+            result = tool.execute(
+                "python -c \"import os; print(os.listdir('.'))\"", cwd=tmpdir
+            )
 
             assert result.success is True
             # Just verify the command ran successfully
@@ -114,10 +116,10 @@ class TestBashTool:
     def test_bash_timeout(self):
         """Test timeout"""
         tool = BashTool(timeout=1)
-        result = tool.execute("timeout /t 5", timeout=1)  # Windows equivalent of sleep
+        result = tool.execute('python -c "import time; time.sleep(5)"', timeout=1)
 
         assert result.success is False
-        assert "timeout" in result.error.lower() or "error" in result.error.lower()
+        assert result.exit_code == -1
 
 
 class TestReadTool:
@@ -187,7 +189,7 @@ class TestWriteTool:
             assert result.success is True
             assert os.path.exists(filepath)
 
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             assert content == "Hello World"
@@ -218,7 +220,7 @@ class TestWriteTool:
 
             assert result.success is True
 
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             assert "Line 1" in content
@@ -240,7 +242,7 @@ class TestEditTool:
 
             assert result.success is True
 
-            with open(f.name, "r") as file:
+            with open(f.name, "r", encoding="utf-8") as file:
                 content = file.read()
 
             assert content == "Hello Universe"

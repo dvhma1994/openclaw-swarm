@@ -16,15 +16,22 @@ Architecture:
          -> post_check() -> [AUDIT/DRIFT/HEAL]
          -> record() -> Memory + Audit + HUD
 """
-import json, os, time, hashlib, tempfile
+
+import json
+import logging
+import os
+import tempfile
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional, Dict, List
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 
-BASE_DIR = Path(os.environ.get("OPENCLAW_DIRECTOR_DIR",
-    Path.home() / ".openclaw" / "workspaces" / "director"))
+BASE_DIR = Path(
+    os.environ.get(
+        "OPENCLAW_DIRECTOR_DIR", Path.home() / ".openclaw" / "workspaces" / "director"
+    )
+)
 GUARDIAN_DIR = BASE_DIR / "guardian_v2"
 GUARDIAN_DIR.mkdir(parents=True, exist_ok=True)
 DRIFT_LOG = GUARDIAN_DIR / "drift_log.jsonl"
@@ -33,23 +40,34 @@ BUDGET_FILE = GUARDIAN_DIR / "budget_state.json"
 
 
 class DriftLevel(str, Enum):
-    NONE = "none"; LOW = "low"; MEDIUM = "medium"; HIGH = "high"; CRITICAL = "critical"
+    NONE = "none"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+
 
 class GuardianAction(str, Enum):
-    ALLOW = "allow"; BLOCK = "block"; WARN = "warn"; THROTTLE = "throttle"
-    HEAL = "heal"; ROLLBACK = "rollback"
+    ALLOW = "allow"
+    BLOCK = "block"
+    WARN = "warn"
+    THROTTLE = "throttle"
+    HEAL = "heal"
+    ROLLBACK = "rollback"
 
 
 @dataclass
 class DriftState:
     """Current drift state for monitoring."""
-    model_accuracy: float = 1.0      # 0.0-1.0, degrades over time
-    error_rate_24h: float = 0.0     # Error percentage in last 24h
-    cost_trend: float = 0.0        # Daily cost trend (positive = increasing)
-    latency_trend: float = 0.0    # Latency trend
+
+    model_accuracy: float = 1.0  # 0.0-1.0, degrades over time
+    error_rate_24h: float = 0.0  # Error percentage in last 24h
+    cost_trend: float = 0.0  # Daily cost trend (positive = increasing)
+    latency_trend: float = 0.0  # Latency trend
     drift_level: DriftLevel = DriftLevel.NONE
     last_checked: str = ""
     recommendations: list = field(default_factory=list)
+
     def to_dict(self):
         return {**asdict(self), "drift_level": self.drift_level.value}
 
@@ -57,25 +75,45 @@ class DriftState:
 @dataclass
 class AgentReputation:
     """Compliance reputation for an agent."""
-    agent_id: str; total_actions: int = 0
-    violations: int = 0; warnings: int = 0
-    compliance_rate: float = 1.0    # 0.0-1.0
-    last_violation: str = ""; last_warning: str = ""
-    trust_level: float = 1.0       # 0.0-2.0
-    def to_dict(self): return asdict(self)
+
+    agent_id: str
+    total_actions: int = 0
+    violations: int = 0
+    warnings: int = 0
+    compliance_rate: float = 1.0  # 0.0-1.0
+    last_violation: str = ""
+    last_warning: str = ""
+    trust_level: float = 1.0  # 0.0-2.0
+
+    def to_dict(self):
+        return asdict(self)
 
 
 @dataclass
 class BudgetState:
     """Budget tracking state."""
-    daily_limit: float = 10.0; daily_used: float = 0.0
-    weekly_limit: float = 50.0; weekly_used: float = 0.0
-    daily_reset: str = ""; weekly_reset: str = ""
-    def to_dict(self): return asdict(self)
-    def daily_remaining(self) -> float: return max(0, self.daily_limit - self.daily_used)
-    def weekly_remaining(self) -> float: return max(0, self.weekly_limit - self.weekly_used)
-    def is_daily_exceeded(self) -> bool: return self.daily_used >= self.daily_limit
-    def is_weekly_exceeded(self) -> bool: return self.weekly_used >= self.weekly_limit
+
+    daily_limit: float = 10.0
+    daily_used: float = 0.0
+    weekly_limit: float = 50.0
+    weekly_used: float = 0.0
+    daily_reset: str = ""
+    weekly_reset: str = ""
+
+    def to_dict(self):
+        return asdict(self)
+
+    def daily_remaining(self) -> float:
+        return max(0, self.daily_limit - self.daily_used)
+
+    def weekly_remaining(self) -> float:
+        return max(0, self.weekly_limit - self.weekly_used)
+
+    def is_daily_exceeded(self) -> bool:
+        return self.daily_used >= self.daily_limit
+
+    def is_weekly_exceeded(self) -> bool:
+        return self.weekly_used >= self.weekly_limit
 
 
 class DriftDetector:
@@ -83,14 +121,20 @@ class DriftDetector:
     Monitors system metrics for drift (performance degradation).
     Inspired by Skynet Agent's autopilot + Plandex's automated debugging.
     """
+
     def __init__(self):
         self.state = DriftState()
         self._recent_errors: List[dict] = []
         self._recent_costs: List[float] = []
 
     def record_error(self, error_type: str, error_msg: str):
-        self._recent_errors.append({"type": error_type, "msg": error_msg,
-            "ts": datetime.now(timezone.utc).isoformat()})
+        self._recent_errors.append(
+            {
+                "type": error_type,
+                "msg": error_msg,
+                "ts": datetime.now(timezone.utc).isoformat(),
+            }
+        )
         # Keep last 24h
         cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
         self._recent_errors = [e for e in self._recent_errors if e["ts"] > cutoff]
@@ -110,7 +154,11 @@ class DriftDetector:
         # Cost trend
         if len(self._recent_costs) >= 5:
             recent = self._recent_costs[-5:]
-            older = self._recent_costs[-10:-5] if len(self._recent_costs) >= 10 else self._recent_costs[:5]
+            older = (
+                self._recent_costs[-10:-5]
+                if len(self._recent_costs) >= 10
+                else self._recent_costs[:5]
+            )
             avg_recent = sum(recent) / len(recent)
             avg_older = sum(older) / max(len(older), 1)
             self.state.cost_trend = avg_recent - avg_older
@@ -146,6 +194,7 @@ class DriftDetector:
 
 class ReputationTracker:
     """Tracks agent compliance reputation."""
+
     def __init__(self):
         self.agents: Dict[str, AgentReputation] = {}
         self._load()
@@ -157,17 +206,22 @@ class ReputationTracker:
                     data = json.load(f)
                 for a in data.get("agents", []):
                     self.agents[a["agent_id"]] = AgentReputation(**a)
-            except Exception: pass
+            except Exception:
+                logging.warning("Failed to load reputation data", exc_info=True)
 
     def _save(self):
-        tmp_fd, tmp_path = tempfile.mkstemp(dir=str(GUARDIAN_DIR), suffix='.tmp')
+        tmp_fd, tmp_path = tempfile.mkstemp(dir=str(GUARDIAN_DIR), suffix=".tmp")
         try:
-            data = {"agents": [a.to_dict() for a in self.agents.values()],
-                    "updated": datetime.now(timezone.utc).isoformat()}
-            with os.fdopen(tmp_fd, 'w', encoding='utf-8') as f:
+            data = {
+                "agents": [a.to_dict() for a in self.agents.values()],
+                "updated": datetime.now(timezone.utc).isoformat(),
+            }
+            with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(REPUTATION_FILE))
-        except Exception: os.unlink(tmp_path); raise
+        except Exception:
+            os.unlink(tmp_path)
+            raise
 
     def record_action(self, agent_id: str, result: str):
         """Record an action result: 'compliant', 'violation', or 'warning'."""
@@ -188,7 +242,8 @@ class ReputationTracker:
         self._save()
 
     def get_trust_level(self, agent_id: str) -> float:
-        if agent_id not in self.agents: return 1.0
+        if agent_id not in self.agents:
+            return 1.0
         return self.agents[agent_id].trust_level
 
     def get_stats(self):
@@ -197,6 +252,7 @@ class ReputationTracker:
 
 class BudgetGuardian:
     """Enforces hard budget limits."""
+
     def __init__(self):
         self.state = BudgetState()
         self._load()
@@ -207,37 +263,51 @@ class BudgetGuardian:
                 with open(BUDGET_FILE, "r", encoding="utf-8") as f:
                     data = json.load(f)
                 self.state = BudgetState(**data)
-            except Exception: pass
+            except Exception:
+                logging.warning("Failed to load budget state", exc_info=True)
         self._check_resets()
 
     def _save(self):
-        tmp_fd, tmp_path = tempfile.mkstemp(dir=str(GUARDIAN_DIR), suffix='.tmp')
+        tmp_fd, tmp_path = tempfile.mkstemp(dir=str(GUARDIAN_DIR), suffix=".tmp")
         try:
-            with os.fdopen(tmp_fd, 'w', encoding='utf-8') as f:
+            with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
                 json.dump(self.state.to_dict(), f, indent=2, default=str)
             os.replace(tmp_path, str(BUDGET_FILE))
-        except Exception: os.unlink(tmp_path); raise
+        except Exception:
+            os.unlink(tmp_path)
+            raise
 
     def _check_resets(self):
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         if self.state.daily_reset != today:
-            self.state.daily_used = 0.0; self.state.daily_reset = today
+            self.state.daily_used = 0.0
+            self.state.daily_reset = today
         # Weekly reset (Monday)
         week_num = datetime.now(timezone.utc).isocalendar()[1]
         week_key = f"{datetime.now(timezone.utc).year}-W{week_num}"
         if self.state.weekly_reset != week_key:
-            self.state.weekly_used = 0.0; self.state.weekly_reset = week_key
+            self.state.weekly_used = 0.0
+            self.state.weekly_reset = week_key
         self._save()
 
     def can_spend(self, amount: float) -> tuple:
         """Check if spending amount is allowed. Returns (allowed, reason)."""
         self._check_resets()
         if self.state.is_daily_exceeded():
-            return False, f"Daily budget exceeded: ${self.state.daily_used:.2f}/${self.state.daily_limit:.0f}"
+            return (
+                False,
+                f"Daily budget exceeded: ${self.state.daily_used:.2f}/${self.state.daily_limit:.0f}",
+            )
         if self.state.daily_remaining() < amount:
-            return False, f"Insufficient daily budget: ${self.state.daily_remaining():.2f} remaining"
+            return (
+                False,
+                f"Insufficient daily budget: ${self.state.daily_remaining():.2f} remaining",
+            )
         if self.state.is_weekly_exceeded():
-            return False, f"Weekly budget exceeded: ${self.state.weekly_used:.2f}/${self.state.weekly_limit:.0f}"
+            return (
+                False,
+                f"Weekly budget exceeded: ${self.state.weekly_used:.2f}/${self.state.weekly_limit:.0f}",
+            )
         return True, "Budget OK"
 
     def record_spend(self, amount: float):
@@ -247,9 +317,11 @@ class BudgetGuardian:
         self._save()
 
     def get_stats(self):
-        return {**self.state.to_dict(),
-                "daily_remaining": self.state.daily_remaining(),
-                "weekly_remaining": self.state.weekly_remaining()}
+        return {
+            **self.state.to_dict(),
+            "daily_remaining": self.state.daily_remaining(),
+            "weekly_remaining": self.state.weekly_remaining(),
+        }
 
 
 class ConstitutionalGuardianV2:
@@ -257,6 +329,7 @@ class ConstitutionalGuardianV2:
     Full-stack constitutional guardian with drift detection,
     reputation tracking, and budget enforcement.
     """
+
     def __init__(self):
         self.drift = DriftDetector()
         self.reputation = ReputationTracker()
@@ -265,11 +338,14 @@ class ConstitutionalGuardianV2:
         self._constitution = None
         try:
             from constitutional_ai import get_checker
-            self._constitution = get_checker()
-        except Exception: pass
 
-    def pre_check(self, action_type: str, params: dict,
-                  agent_id: str = "director") -> dict:
+            self._constitution = get_checker()
+        except Exception:
+            logging.warning("Failed to wire constitutional AI", exc_info=True)
+
+    def pre_check(
+        self, action_type: str, params: dict, agent_id: str = "director"
+    ) -> dict:
         """Enhanced pre-check: constitution + budget + reputation."""
         result = {"action": GuardianAction.ALLOW, "reasons": [], "trust_level": 1.0}
         # 1. Constitutional check
@@ -282,7 +358,8 @@ class ConstitutionalGuardianV2:
                 elif c_result.reason.startswith("[WARNING]"):
                     result["action"] = GuardianAction.WARN
                     result["reasons"].append(f"Warning: {c_result.reason}")
-            except Exception: pass
+            except Exception:
+                logging.warning("Constitutional check failed", exc_info=True)
         # 2. Budget check
         estimated_cost = params.get("estimated_cost", 0)
         if estimated_cost > 0:
@@ -295,7 +372,9 @@ class ConstitutionalGuardianV2:
         result["trust_level"] = trust
         if trust < 0.3:
             result["action"] = GuardianAction.BLOCK
-            result["reasons"].append(f"Trust: Agent {agent_id} trust level too low ({trust:.2f})")
+            result["reasons"].append(
+                f"Trust: Agent {agent_id} trust level too low ({trust:.2f})"
+            )
         elif trust < 0.5:
             if result["action"] == GuardianAction.ALLOW:
                 result["action"] = GuardianAction.WARN
@@ -312,12 +391,21 @@ class ConstitutionalGuardianV2:
             self.reputation.record_action(agent_id, "warning")
         else:
             self.reputation.record_action(agent_id, "compliant")
-        result["action"] = result["action"].value if isinstance(result["action"], GuardianAction) else result["action"]
+        result["action"] = (
+            result["action"].value
+            if isinstance(result["action"], GuardianAction)
+            else result["action"]
+        )
         return result
 
-    def post_check(self, action_type: str, result: dict,
-                    cost_usd: float = 0, agent_id: str = "director",
-                    error: str = "") -> dict:
+    def post_check(
+        self,
+        action_type: str,
+        result: dict,
+        cost_usd: float = 0,
+        agent_id: str = "director",
+        error: str = "",
+    ) -> dict:
         """Post-action check: record drift, budget, and reputation."""
         # Record budget
         if cost_usd > 0:
@@ -331,10 +419,13 @@ class ConstitutionalGuardianV2:
         if self._constitution:
             try:
                 self._constitution.post_check(action_type, result)
-            except Exception: pass
-        return {"drift_level": self.drift.state.drift_level.value,
-                "daily_budget_remaining": self.budget.state.daily_remaining(),
-                "trust_level": self.reputation.get_trust_level(agent_id)}
+            except Exception:
+                logging.warning("Constitutional post-check failed", exc_info=True)
+        return {
+            "drift_level": self.drift.state.drift_level.value,
+            "daily_budget_remaining": self.budget.state.daily_remaining(),
+            "trust_level": self.reputation.get_trust_level(agent_id),
+        }
 
     def get_full_status(self) -> dict:
         return {
@@ -346,20 +437,28 @@ class ConstitutionalGuardianV2:
 
 
 _guardian: Optional[ConstitutionalGuardianV2] = None
+
+
 def get_guardian() -> ConstitutionalGuardianV2:
     global _guardian
-    if _guardian is None: _guardian = ConstitutionalGuardianV2()
+    if _guardian is None:
+        _guardian = ConstitutionalGuardianV2()
     return _guardian
 
 
 if __name__ == "__main__":
     import sys
+
     guardian = get_guardian()
     cmd = sys.argv[1] if len(sys.argv) > 1 else "status"
-    if cmd == "status": print(json.dumps(guardian.get_full_status(), indent=2, default=str))
+    if cmd == "status":
+        print(json.dumps(guardian.get_full_status(), indent=2, default=str))
     elif cmd == "check" and len(sys.argv) > 2:
         result = guardian.pre_check(sys.argv[2], {})
         print(json.dumps(result, indent=2, default=str))
-    elif cmd == "drift": print(json.dumps(guardian.drift.get_stats(), indent=2, default=str))
-    elif cmd == "budget": print(json.dumps(guardian.budget.get_stats(), indent=2, default=str))
-    else: print("Commands: status, check <action_type>, drift, budget")
+    elif cmd == "drift":
+        print(json.dumps(guardian.drift.get_stats(), indent=2, default=str))
+    elif cmd == "budget":
+        print(json.dumps(guardian.budget.get_stats(), indent=2, default=str))
+    else:
+        print("Commands: status, check <action_type>, drift, budget")

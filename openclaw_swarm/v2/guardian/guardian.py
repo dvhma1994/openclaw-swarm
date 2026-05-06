@@ -18,6 +18,7 @@ Architecture:
 """
 
 import json
+import logging
 import os
 import tempfile
 from dataclasses import asdict, dataclass, field
@@ -206,7 +207,7 @@ class ReputationTracker:
                 for a in data.get("agents", []):
                     self.agents[a["agent_id"]] = AgentReputation(**a)
             except Exception:
-                pass
+                logging.exception("Failed to load reputation data")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(dir=str(GUARDIAN_DIR), suffix=".tmp")
@@ -219,6 +220,7 @@ class ReputationTracker:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(REPUTATION_FILE))
         except Exception:
+            logging.exception("Failed to save reputation data")
             os.unlink(tmp_path)
             raise
 
@@ -263,7 +265,7 @@ class BudgetGuardian:
                     data = json.load(f)
                 self.state = BudgetState(**data)
             except Exception:
-                pass
+                logging.exception("Failed to load budget state")
         self._check_resets()
 
     def _save(self):
@@ -273,6 +275,7 @@ class BudgetGuardian:
                 json.dump(self.state.to_dict(), f, indent=2, default=str)
             os.replace(tmp_path, str(BUDGET_FILE))
         except Exception:
+            logging.exception("Failed to save budget state")
             os.unlink(tmp_path)
             raise
 
@@ -340,7 +343,7 @@ class ConstitutionalGuardianV2:
 
             self._constitution = get_checker()
         except Exception:
-            pass
+            logging.warning("Failed to load constitutional AI checker")
 
     def pre_check(
         self, action_type: str, params: dict, agent_id: str = "director"
@@ -358,7 +361,7 @@ class ConstitutionalGuardianV2:
                     result["action"] = GuardianAction.WARN
                     result["reasons"].append(f"Warning: {c_result.reason}")
             except Exception:
-                pass
+                logging.warning("Constitutional pre-check failed for %s", action_type)
         # 2. Budget check
         estimated_cost = params.get("estimated_cost", 0)
         if estimated_cost > 0:
@@ -419,7 +422,7 @@ class ConstitutionalGuardianV2:
             try:
                 self._constitution.post_check(action_type, result)
             except Exception:
-                pass
+                logging.warning("Constitutional post-check failed for %s", action_type)
         return {
             "drift_level": self.drift.state.drift_level.value,
             "daily_budget_remaining": self.budget.state.daily_remaining(),

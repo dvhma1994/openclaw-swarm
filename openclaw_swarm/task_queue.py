@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from enum import Enum
 from queue import PriorityQueue
 from typing import Any, Callable, Dict, List, Optional
+import logging
 
 
 class TaskStatus(Enum):
@@ -246,7 +247,7 @@ class TaskQueue:
                 self._process_task(task, worker)
 
             except Exception:
-                # Queue empty or timeout
+                logging.debug("Queue empty or timeout")
                 continue
 
     def start(self):

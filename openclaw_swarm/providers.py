@@ -8,6 +8,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import logging
 
 
 class ProviderType(Enum):
@@ -74,13 +75,13 @@ class ProviderManager:
         """Load profiles from file"""
         if self.config_path.exists():
             try:
-                with open(self.config_path, "r") as f:
+                with open(self.config_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     for name, profile_data in data.get("profiles", {}).items():
                         self.profiles[name] = ProviderProfile.from_dict(profile_data)
                     self.active_profile = data.get("active_profile")
             except Exception as e:
-                print(f"Error loading profiles: {e}")
+                logging.error("Error loading profiles: %s", e)
 
     def _save_profiles(self):
         """Save profiles to file"""
@@ -89,7 +90,7 @@ class ProviderManager:
             "profiles": {name: p.to_dict() for name, p in self.profiles.items()},
             "active_profile": self.active_profile,
         }
-        with open(self.config_path, "w") as f:
+        with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
     def add_profile(self, profile: ProviderProfile) -> bool:

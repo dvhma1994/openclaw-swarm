@@ -22,7 +22,6 @@ import json
 import os
 import threading
 import time
-import traceback
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -120,7 +119,7 @@ class SessionManager:
 
     def add_message(self, session_id: str, msg: WebMessage):
         if session_id not in self.sessions:
-            self.create_session()
+            self.create_session(model="sonnet")
         session = self.sessions[session_id]
         msg.timestamp = datetime.now(timezone.utc).isoformat()
         session.messages.append(msg.to_dict())
@@ -207,8 +206,11 @@ class WebUIAPI:
             if parts[0] == "api":
                 return self._handle_api(method, parts[1:], body or {})
             return {"error": "Not found", "path": path}
-        except Exception as e:
-            return {"error": str(e), "traceback": traceback.format_exc()[:200]}
+        except Exception:
+            import logging
+
+            logging.exception("Web UI API error in %s %s", method, path)
+            return {"error": "Internal server error"}
 
     def _handle_api(self, method: str, parts: list, body: dict) -> dict:
         if not parts:
@@ -483,7 +485,13 @@ class WebUIRequestHandler(BaseHTTPRequestHandler):
     def _send_json(self, data: dict, status: int = 200):
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin", "")
+        if origin.startswith("http://localhost:") or origin.startswith(
+            "http://127.0.0.1:"
+        ):
+            self.send_header("Access-Control-Allow-Origin", origin)
+        else:
+            self.send_header("Access-Control-Allow-Origin", "http://localhost:3000")
         self.end_headers()
         self.wfile.write(
             json.dumps(data, default=str, ensure_ascii=False).encode("utf-8")

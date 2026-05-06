@@ -19,6 +19,8 @@ Features:
 
 import hashlib
 import json
+import logging
+import sys
 import os
 import subprocess
 import time
@@ -36,6 +38,8 @@ BASE_DIR = Path(
 HEAL_DIR = BASE_DIR / "auto_heal"
 HEAL_DIR.mkdir(parents=True, exist_ok=True)
 HEAL_LOG = HEAL_DIR / "heal_log.jsonl"
+
+_SUBPROCESS_WIN_KW = {"windows_hide": True} if sys.platform == "win32" else {}
 
 
 class HealStatus(str, Enum):
@@ -102,12 +106,12 @@ class LintChecker:
                     capture_output=True,
                     timeout=5,
                     shell=True,
-                    windows_hide=True,
+                    **_SUBPROCESS_WIN_KW,
                 )
                 if result.returncode == 0:
                     tools.append(tool)
             except Exception:
-                pass
+                logging.warning("Lint tool detection failed for %s", tool)
         return tools
 
     def check(self, file_path: str) -> Dict[str, list]:
@@ -133,7 +137,7 @@ class LintChecker:
                     capture_output=True,
                     timeout=30,
                     shell=True,
-                    windows_hide=True,
+                    **_SUBPROCESS_WIN_KW,
                 )
                 if result.stdout:
                     for item in json.loads(result.stdout):
@@ -145,7 +149,7 @@ class LintChecker:
                         errors[self._category_key(err["category"])].append(err)
                         errors["all"].append(err)
             except Exception:
-                pass
+                logging.exception("Ruff check failed for %s", file_path)
         elif "flake8" in self.available_tools:
             try:
                 result = subprocess.run(
@@ -153,7 +157,7 @@ class LintChecker:
                     capture_output=True,
                     timeout=30,
                     shell=True,
-                    windows_hide=True,
+                    **_SUBPROCESS_WIN_KW,
                 )
                 if result.stdout:
                     for item in json.loads(result.stdout):
@@ -165,7 +169,7 @@ class LintChecker:
                         errors[self._category_key(err["category"])].append(err)
                         errors["all"].append(err)
             except Exception:
-                pass
+                logging.exception("Flake8 check failed for %s", file_path)
         return errors
 
     def _classify_error(self, code: str) -> str:
@@ -387,7 +391,7 @@ class SelfHealPipeline:
                     error_text=str(lint_errors["all"][:3]),
                 )
             except Exception:
-                pass
+                logging.warning("Failed to report heal failure to evolution engine")
 
         return result
 
@@ -423,7 +427,7 @@ class SelfHealPipeline:
                     try:
                         entries.append(json.loads(line.strip()))
                     except Exception:
-                        pass
+                        logging.warning("Failed to parse heal log line")
         total = len(entries)
         fixed = sum(1 for e in entries if e.get("status") == "fixed")
         return {

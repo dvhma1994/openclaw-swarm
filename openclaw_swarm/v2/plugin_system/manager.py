@@ -26,6 +26,7 @@ Each plugin declares:
 
 import hashlib
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -145,7 +146,7 @@ class PluginManager:
                     plugin = PluginManifest.from_dict(pdata)
                     self.plugins[plugin.plugin_id] = plugin
             except Exception:
-                pass
+                logging.exception("Failed to load plugin registry")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(
@@ -161,6 +162,7 @@ class PluginManager:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(self.registry_path))
         except Exception:
+            logging.exception("Failed to save plugin registry")
             os.unlink(tmp_path)
             raise
 

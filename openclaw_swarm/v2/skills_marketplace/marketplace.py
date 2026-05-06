@@ -17,6 +17,7 @@ Categories: development, testing, security, infrastructure, content,
 
 import hashlib
 import json
+import logging
 import os
 import tempfile
 from dataclasses import asdict, dataclass, field
@@ -122,7 +123,7 @@ class SkillsMarketplace:
                     skill = SkillEntry.from_dict(s)
                     self.skills[skill.skill_id] = skill
             except Exception:
-                pass
+                logging.exception("Failed to load skill registry")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(
@@ -138,6 +139,7 @@ class SkillsMarketplace:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(self.registry_file))
         except Exception:
+            logging.exception("Failed to save skill registry")
             os.unlink(tmp_path)
             raise
 

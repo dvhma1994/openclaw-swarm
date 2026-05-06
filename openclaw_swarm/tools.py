@@ -5,12 +5,14 @@ Bash and file operations like OpenClaude
 
 import json
 import os
+import shlex
 import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+import logging
 
 
 class ToolType(Enum):
@@ -99,10 +101,11 @@ class BashTool(Tool):
             if env:
                 exec_env.update(env)
 
-            # Execute command
+            # Execute command (shell=False for security)
+            cmd_args = shlex.split(command)
             result = subprocess.run(
-                command,
-                shell=True,
+                cmd_args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 cwd=cwd,
@@ -445,6 +448,7 @@ class GrepTool(Tool):
                                 if len(results) >= max_results:
                                     break
                 except Exception:
+                    logging.warning(f"Failed to read file {file_path}", exc_info=True)
                     continue
 
                 if len(results) >= max_results:

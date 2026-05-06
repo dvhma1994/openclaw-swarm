@@ -19,14 +19,21 @@ Output formats:
 2. HTML dashboard (auto-refresh, full stats)
 3. JSON API (for programmatic access)
 """
-import json, os, time
+
+import json
+import logging
+import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional
 from dataclasses import dataclass, field, asdict
 
-BASE_DIR = Path(os.environ.get("OPENCLAW_DIRECTOR_DIR",
-    Path.home() / ".openclaw" / "workspaces" / "director"))
+BASE_DIR = Path(
+    os.environ.get(
+        "OPENCLAW_DIRECTOR_DIR", Path.home() / ".openclaw" / "workspaces" / "director"
+    )
+)
 HUD_DIR = BASE_DIR / "realtime_hud"
 HUD_DIR.mkdir(parents=True, exist_ok=True)
 DASHBOARD_FILE = BASE_DIR / "dashboards" / "live_hud.html"
@@ -35,19 +42,24 @@ DASHBOARD_FILE = BASE_DIR / "dashboards" / "live_hud.html"
 @dataclass
 class HUDMetrics:
     """All metrics displayed in the HUD."""
+
     # Context
     context_used_pct: float = 0.0
     context_total: int = 0
     context_used: int = 0
     # Model
-    model_name: str = ""; provider: str = ""
+    model_name: str = ""
+    provider: str = ""
     # Session
     session_duration_min: float = 0.0
     session_id: str = ""
     # Tools
-    tool_reads: int = 0; tool_edits: int = 0
-    tool_searches: int = 0; tool_bash: int = 0
-    tool_writes: int = 0; tool_mcp: int = 0
+    tool_reads: int = 0
+    tool_edits: int = 0
+    tool_searches: int = 0
+    tool_bash: int = 0
+    tool_writes: int = 0
+    tool_mcp: int = 0
     # Agents
     active_agents: list = field(default_factory=list)
     # Cost
@@ -56,27 +68,33 @@ class HUDMetrics:
     daily_used_usd: float = 0.0
     # Tokens
     total_tokens: int = 0
-    prompt_tokens: int = 0; completion_tokens: int = 0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
     # Todo
-    todo_total: int = 0; todo_completed: int = 0
+    todo_total: int = 0
+    todo_completed: int = 0
     # Evolution
     evolution_generation: int = 0
     evolution_mutations: int = 0
     evolution_promotions: int = 0
     # Swarm
-    swarm_agents: int = 0; swarm_tasks: int = 0
+    swarm_agents: int = 0
+    swarm_tasks: int = 0
     # Memory
     memory_auto_entries: int = 0
     memory_conscious_entries: int = 0
     memory_kg_nodes: int = 0
     # Credentials
-    cred_active: int = 0; cred_total: int = 0
+    cred_active: int = 0
+    cred_total: int = 0
     # Git
-    git_branch: str = ""; git_dirty: bool = False
+    git_branch: str = ""
+    git_dirty: bool = False
     # Timestamp
     updated_at: str = ""
 
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 
 class RealtimeHUD:
@@ -97,48 +115,72 @@ class RealtimeHUD:
         # Evolution Engine
         try:
             from evolution_engine.engine import get_evolution_engine
+
             e = get_evolution_engine().get_stats()
             self.metrics.evolution_generation = e.get("generation", 0)
             self.metrics.evolution_mutations = e.get("total_mutations", 0)
             self.metrics.evolution_promotions = e.get("total_promotions", 0)
-        except Exception: pass
+        except Exception:
+            logging.warning("Failed to collect evolution stats", exc_info=True)
 
         # Swarm
         try:
             from swarm_orchestrator.orchestrator import get_swarm
+
             s = get_swarm().get_stats()
             self.metrics.swarm_agents = s.get("registered_agents", 0)
             self.metrics.swarm_tasks = s.get("total_tasks", 0)
-        except Exception: pass
+        except Exception:
+            logging.warning("Failed to collect swarm stats", exc_info=True)
 
         # Memory
         try:
             from dual_memory.memory import get_dual_memory
+
             m = get_dual_memory().get_stats()
-            self.metrics.memory_auto_entries = m.get("automatic", {}).get("total_entries", 0)
-            self.metrics.memory_conscious_entries = m.get("conscious", {}).get("total_entries", 0)
+            self.metrics.memory_auto_entries = m.get("automatic", {}).get(
+                "total_entries", 0
+            )
+            self.metrics.memory_conscious_entries = m.get("conscious", {}).get(
+                "total_entries", 0
+            )
             self.metrics.memory_kg_nodes = m.get("knowledge_graph", {}).get("nodes", 0)
-        except Exception: pass
+        except Exception:
+            logging.warning("Failed to collect memory stats", exc_info=True)
 
         # Credentials
         try:
             from credential_pool.pool import get_credential_pool
+
             c = get_credential_pool().get_stats()
             self.metrics.cred_active = c.get("total_active", 0)
             self.metrics.cred_total = c.get("total_keys", 0)
-        except Exception: pass
+        except Exception:
+            logging.warning("Failed to collect credential stats", exc_info=True)
 
         # Git
         try:
             import subprocess
-            result = subprocess.run(["git", "branch", "--show-current"],
-                capture_output=True, timeout=5, shell=True, windows_hide=True)
+
+            result = subprocess.run(
+                ["git", "branch", "--show-current"],
+                capture_output=True,
+                timeout=5,
+                shell=True,
+                **({"windows_hide": True} if sys.platform == "win32" else {}),
+            )
             if result.returncode == 0:
                 self.metrics.git_branch = result.stdout.decode().strip()
-            result = subprocess.run(["git", "status", "--porcelain"],
-                capture_output=True, timeout=5, shell=True, windows_hide=True)
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True,
+                timeout=5,
+                shell=True,
+                **({"windows_hide": True} if sys.platform == "win32" else {}),
+            )
             self.metrics.git_dirty = bool(result.stdout.strip())
-        except Exception: pass
+        except Exception:
+            logging.warning("Failed to collect git stats", exc_info=True)
 
         self.metrics.updated_at = datetime.now(timezone.utc).isoformat()
 
@@ -146,22 +188,32 @@ class RealtimeHUD:
         """Render 2-3 line terminal HUD (like Claude HUD)."""
         ctx_pct = self.metrics.context_used_pct
         ctx_bar = self._bar(ctx_pct, 20)
-        budget_pct = (self.metrics.daily_used_usd / max(self.metrics.daily_budget_usd, 0.01)) * 100
+        budget_pct = (
+            self.metrics.daily_used_usd / max(self.metrics.daily_budget_usd, 0.01)
+        ) * 100
         budget_bar = self._bar(budget_pct, 10)
 
-        line1 = (f"[{self.metrics.model_name or 'unknown'}] "
-                 f"{self.metrics.provider} | "
-                 f"{self.metrics.git_branch}"
-                 f"{'*' if self.metrics.git_dirty else ''}")
+        line1 = (
+            f"[{self.metrics.model_name or 'unknown'}] "
+            f"{self.metrics.provider} | "
+            f"{self.metrics.git_branch}"
+            f"{'*' if self.metrics.git_dirty else ''}"
+        )
 
-        line2 = (f"Context {ctx_bar} {ctx_pct:.0f}% | "
-                 f"Budget {budget_bar} ${self.metrics.daily_used_usd:.2f}/${self.metrics.daily_budget_usd:.0f}")
+        line2 = (
+            f"Context {ctx_bar} {ctx_pct:.0f}% | "
+            f"Budget {budget_bar} ${self.metrics.daily_used_usd:.2f}/${self.metrics.daily_budget_usd:.0f}"
+        )
 
         tools_str = ""
-        if self.metrics.tool_reads: tools_str += f"R:{self.metrics.tool_reads} "
-        if self.metrics.tool_edits: tools_str += f"E:{self.metrics.tool_edits} "
-        if self.metrics.tool_searches: tools_str += f"S:{self.metrics.tool_searches} "
-        if self.metrics.tool_bash: tools_str += f"B:{self.metrics.tool_bash}"
+        if self.metrics.tool_reads:
+            tools_str += f"R:{self.metrics.tool_reads} "
+        if self.metrics.tool_edits:
+            tools_str += f"E:{self.metrics.tool_edits} "
+        if self.metrics.tool_searches:
+            tools_str += f"S:{self.metrics.tool_searches} "
+        if self.metrics.tool_bash:
+            tools_str += f"B:{self.metrics.tool_bash}"
 
         line3 = ""
         if tools_str:
@@ -175,7 +227,8 @@ class RealtimeHUD:
             line3 += f" | Evo: Gen {self.metrics.evolution_generation}"
 
         output = f"{line1}\n{line2}"
-        if line3: output += f"\n{line3}"
+        if line3:
+            output += f"\n{line3}"
         return output
 
     def render_json(self) -> str:
@@ -328,31 +381,49 @@ class RealtimeHUD:
         return "#" * filled + "-" * (width - filled)
 
     def _bar_class(self, pct: float) -> str:
-        if pct < 50: return "bar-green"
-        elif pct < 80: return "bar-yellow"
+        if pct < 50:
+            return "bar-green"
+        elif pct < 80:
+            return "bar-yellow"
         return "bar-red"
 
 
 _hud: Optional[RealtimeHUD] = None
+
+
 def get_hud() -> RealtimeHUD:
     global _hud
-    if _hud is None: _hud = RealtimeHUD()
+    if _hud is None:
+        _hud = RealtimeHUD()
     return _hud
 
 
 if __name__ == "__main__":
     import sys
+
     hud = get_hud()
-    hud.update(model_name="Sonnet 4.6", provider="Anthropic",
-               context_used_pct=45, context_total=200000, context_used=90000,
-               daily_budget_usd=10, daily_used_usd=2.5,
-               total_cost_usd=1.23, total_tokens=50000,
-               tool_reads=12, tool_edits=5, tool_searches=3)
+    hud.update(
+        model_name="Sonnet 4.6",
+        provider="Anthropic",
+        context_used_pct=45,
+        context_total=200000,
+        context_used=90000,
+        daily_budget_usd=10,
+        daily_used_usd=2.5,
+        total_cost_usd=1.23,
+        total_tokens=50000,
+        tool_reads=12,
+        tool_edits=5,
+        tool_searches=3,
+    )
     hud.collect_from_systems()
     cmd = sys.argv[1] if len(sys.argv) > 1 else "terminal"
-    if cmd == "terminal": print(hud.render_terminal())
-    elif cmd == "json": print(hud.render_json())
+    if cmd == "terminal":
+        print(hud.render_terminal())
+    elif cmd == "json":
+        print(hud.render_json())
     elif cmd == "html":
         path = hud.save_html()
         print(f"Dashboard saved: {path}")
-    else: print("Commands: terminal, json, html")
+    else:
+        print("Commands: terminal, json, html")

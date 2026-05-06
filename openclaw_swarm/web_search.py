@@ -7,6 +7,7 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
+import logging
 
 
 @dataclass
@@ -54,7 +55,7 @@ class WebSearch:
             results = self._parse_ddg_html(html, max_results)
 
         except Exception as e:
-            print(f"Search error: {e}")
+            logging.error("Search error: %s", e)
 
         return results
 

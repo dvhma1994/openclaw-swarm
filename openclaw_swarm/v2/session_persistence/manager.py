@@ -14,6 +14,7 @@ Features:
 
 import hashlib
 import json
+import logging
 import os
 import tempfile
 import time
@@ -110,7 +111,7 @@ class SessionPersistence:
                 meta = SessionMetadata.from_dict(data)
                 self.sessions[meta.session_id] = meta
             except Exception:
-                pass
+                logging.warning("Failed to load session metadata from %s", f.name)
 
     def _save_meta(self, meta: SessionMetadata):
         path = self.session_dir / f"{meta.session_id}.meta.json"
@@ -120,6 +121,7 @@ class SessionPersistence:
                 json.dump(meta.to_dict(), f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(path))
         except Exception:
+            logging.exception("Failed to save session metadata for %s", meta.session_id)
             os.unlink(tmp_path)
             raise
 
@@ -136,6 +138,7 @@ class SessionPersistence:
                 )
             os.replace(tmp_path, str(path))
         except Exception:
+            logging.exception("Failed to save steps for session %s", session_id)
             os.unlink(tmp_path)
             raise
 
@@ -212,7 +215,7 @@ class SessionPersistence:
                     data = json.load(f)
                 return data.get("steps", [])
             except Exception:
-                pass
+                logging.warning("Failed to load steps for session %s", session_id)
         return []
 
     def get_session(self, session_id: str) -> Optional[dict]:

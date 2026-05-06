@@ -19,7 +19,7 @@ V2 extends the base swarm system with:
 __version__ = "2.0.0"
 
 from openclaw_swarm.v2.auto_heal import SelfHealPipeline
-from openclaw_swarm.v2.constitutional_guardian import ConstitutionalGuardianV2
+from openclaw_swarm.v2.guardian import ConstitutionalGuardianV2
 from openclaw_swarm.v2.credential_pool import CredentialPool
 from openclaw_swarm.v2.dual_memory import DualMemorySystem
 from openclaw_swarm.v2.evolution_engine import EvolutionEngine
@@ -31,6 +31,7 @@ from openclaw_swarm.v2.session_persistence import SessionPersistence
 from openclaw_swarm.v2.skills_marketplace import SkillsMarketplace
 from openclaw_swarm.v2.streaming_token_counter import StreamingTokenCounter
 from openclaw_swarm.v2.swarm_orchestrator import SwarmOrchestrator
+from openclaw_swarm.v2.web_ui import WebUIServer
 
 __all__ = [
     "EvolutionEngine",
@@ -47,4 +48,5 @@ __all__ = [
     "SessionPersistence",
     "StreamingTokenCounter",
     "ConstitutionalGuardianV2",
+    "WebUIServer",
 ]

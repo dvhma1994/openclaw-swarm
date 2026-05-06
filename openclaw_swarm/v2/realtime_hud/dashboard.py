@@ -21,6 +21,8 @@ Output formats:
 """
 
 import json
+import logging
+import sys
 import os
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
@@ -35,6 +37,8 @@ BASE_DIR = Path(
 HUD_DIR = BASE_DIR / "realtime_hud"
 HUD_DIR.mkdir(parents=True, exist_ok=True)
 DASHBOARD_FILE = BASE_DIR / "dashboards" / "live_hud.html"
+
+_SUBPROCESS_WIN_KW = {"windows_hide": True} if sys.platform == "win32" else {}
 
 
 @dataclass
@@ -119,7 +123,7 @@ class RealtimeHUD:
             self.metrics.evolution_mutations = e.get("total_mutations", 0)
             self.metrics.evolution_promotions = e.get("total_promotions", 0)
         except Exception:
-            pass
+            logging.warning("Failed to collect evolution engine metrics")
 
         # Swarm
         try:
@@ -129,7 +133,7 @@ class RealtimeHUD:
             self.metrics.swarm_agents = s.get("registered_agents", 0)
             self.metrics.swarm_tasks = s.get("total_tasks", 0)
         except Exception:
-            pass
+            logging.warning("Failed to collect swarm metrics")
 
         # Memory
         try:
@@ -144,7 +148,7 @@ class RealtimeHUD:
             )
             self.metrics.memory_kg_nodes = m.get("knowledge_graph", {}).get("nodes", 0)
         except Exception:
-            pass
+            logging.warning("Failed to collect memory metrics")
 
         # Credentials
         try:
@@ -154,7 +158,7 @@ class RealtimeHUD:
             self.metrics.cred_active = c.get("total_active", 0)
             self.metrics.cred_total = c.get("total_keys", 0)
         except Exception:
-            pass
+            logging.warning("Failed to collect credential pool metrics")
 
         # Git
         try:
@@ -165,7 +169,7 @@ class RealtimeHUD:
                 capture_output=True,
                 timeout=5,
                 shell=True,
-                windows_hide=True,
+                **_SUBPROCESS_WIN_KW,
             )
             if result.returncode == 0:
                 self.metrics.git_branch = result.stdout.decode().strip()
@@ -174,11 +178,11 @@ class RealtimeHUD:
                 capture_output=True,
                 timeout=5,
                 shell=True,
-                windows_hide=True,
+                **_SUBPROCESS_WIN_KW,
             )
             self.metrics.git_dirty = bool(result.stdout.strip())
         except Exception:
-            pass
+            logging.warning("Failed to collect git metrics")
 
         self.metrics.updated_at = datetime.now(timezone.utc).isoformat()
 

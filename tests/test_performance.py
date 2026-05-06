@@ -2,7 +2,6 @@
 Performance Benchmarks for OpenClaw Swarm
 """
 
-import os
 import time
 
 import pytest
@@ -16,10 +15,21 @@ from openclaw_swarm import (
     Router,
 )
 
-# Skip tests that require Ollama in CI
+
+def _ollama_available():
+    try:
+        import ollama
+
+        ollama.list()
+        return True
+    except Exception:
+        return False
+
+
+# Skip tests that require Ollama when it is not running
 requires_ollama = pytest.mark.skipif(
-    os.environ.get("CI") == "true",
-    reason="Requires Ollama which is not available in CI",
+    not _ollama_available(),
+    reason="Requires Ollama which is not running",
 )
 
 

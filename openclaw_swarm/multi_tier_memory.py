@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from rich.console import Console
+import logging
 
 console = Console()
 
@@ -106,7 +107,7 @@ class WorkingMemory:
                     data = json.load(f)
                     self.items = {k: WorkingMemoryItem(**v) for k, v in data.items()}
             except Exception:
-                pass
+                logging.warning("Failed to load working memory", exc_info=True)
 
     def _save(self) -> None:
         """Save to disk"""
@@ -225,7 +226,7 @@ class EpisodicMemory:
                     data = json.load(f)
                     self.items = {k: EpisodicMemoryItem(**v) for k, v in data.items()}
             except Exception:
-                pass
+                logging.warning("Failed to load episodic memory", exc_info=True)
 
     def _save(self) -> None:
         """Save to disk"""
@@ -411,7 +412,7 @@ class SemanticMemory:
                     data = json.load(f)
                     self.items = {k: SemanticMemoryItem(**v) for k, v in data.items()}
             except Exception:
-                pass
+                logging.warning("Failed to load semantic memory", exc_info=True)
 
     def _save(self) -> None:
         """Save to disk"""

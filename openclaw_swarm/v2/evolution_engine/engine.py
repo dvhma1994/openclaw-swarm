@@ -4,6 +4,7 @@ Adaptive Evolution Engine - Core Engine
 
 import hashlib
 import json
+import logging
 import os
 import tempfile
 import time
@@ -122,6 +123,7 @@ class PatternDetector:
                     fp = FailurePattern(**pdata)
                     self.patterns[fp.pattern_id] = fp
             except Exception:
+                logging.exception("Failed to load failure patterns")
                 self.patterns = {}
 
     def _save(self):
@@ -139,6 +141,7 @@ class PatternDetector:
                 json.dump(data, f, indent=2, ensure_ascii=False, default=str)
             os.replace(tmp_path, str(self.failure_log))
         except Exception:
+            logging.exception("Failed to save failure patterns")
             os.unlink(tmp_path)
             raise
 
@@ -212,7 +215,7 @@ class MutationGenerator:
                 c = Candidate.from_dict(data)
                 self.candidates[c.candidate_id] = c
             except Exception:
-                pass
+                logging.warning("Failed to load candidate %s", f.name)
 
     def _save_candidate(self, candidate: Candidate):
         path = self.candidates_dir / f"candidate_{candidate.candidate_id}.json"
@@ -442,12 +445,12 @@ class RollbackManager:
         cutoff = datetime.now(timezone.utc) - timedelta(days=max_age_days)
         for f in self.snapshot_dir.glob("snap_*.json"):
             try:
-                with open(f) as fh:
+                with open(f, "r", encoding="utf-8") as fh:
                     meta = json.load(fh)
                 if datetime.fromisoformat(meta["created_at"]) < cutoff:
                     f.unlink()
             except Exception:
-                pass
+                logging.exception("Failed to process snapshot %s", f.name)
 
 
 class EvolutionEngine:
@@ -483,7 +486,7 @@ class EvolutionEngine:
                     success_rate_trend=data.get("success_rate_trend", []),
                 )
             except Exception:
-                pass
+                logging.exception("Failed to load evolution state")
 
     def _save_state(self):
         tmp_fd, tmp_path = tempfile.mkstemp(dir=str(EVOLUTION_DIR), suffix=".tmp")
@@ -492,6 +495,7 @@ class EvolutionEngine:
                 json.dump(self.state.to_dict(), f, indent=2, ensure_ascii=False)
             os.replace(tmp_path, str(STATE_FILE))
         except Exception:
+            logging.exception("Failed to save evolution state")
             os.unlink(tmp_path)
             raise
 
@@ -592,6 +596,7 @@ class EvolutionEngine:
             self._save_state()
             return True
         except Exception:
+            logging.exception("Failed to promote candidate %s", candidate.candidate_id)
             if snapshot_id:
                 self.rollback.restore_snapshot(snapshot_id)
             candidate.status = "promotion_failed"
@@ -603,7 +608,7 @@ class EvolutionEngine:
     def rollback_candidate(self, candidate: Candidate) -> bool:
         for sf in self.rollback.snapshot_dir.glob("snap_*.json"):
             try:
-                with open(sf) as f:
+                with open(sf, "r", encoding="utf-8") as f:
                     meta = json.load(f)
                 if meta["target_path"] == candidate.target_component:
                     if self.rollback.restore_snapshot(meta["snapshot_id"]):
@@ -615,7 +620,7 @@ class EvolutionEngine:
                         self._save_state()
                         return True
             except Exception:
-                pass
+                logging.exception("Failed to process snapshot %s", sf.name)
         return False
 
     def run_evolution_cycle(self) -> dict:

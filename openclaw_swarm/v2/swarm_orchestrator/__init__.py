@@ -6,3 +6,7 @@ Coordinates multiple agents working in parallel on tasks with:
 - Convergence detection for efficiency
 - Adaptive coordination based on task complexity
 """
+
+from .orchestrator import SwarmOrchestrator
+
+__all__ = ["SwarmOrchestrator"]

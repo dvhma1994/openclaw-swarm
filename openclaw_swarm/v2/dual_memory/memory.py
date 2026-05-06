@@ -7,6 +7,7 @@ Layer 3: Knowledge Graph - Entity-relationship mapping
 
 import hashlib
 import json
+import logging
 import math
 import os
 import tempfile
@@ -108,7 +109,7 @@ class AutomaticMemory:
                     entry = AutoMemoryEntry(**e)
                     self.entries[entry.entry_id] = entry
             except Exception:
-                pass
+                logging.exception("Failed to load automatic memory")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(
@@ -129,6 +130,7 @@ class AutomaticMemory:
                 )
             os.replace(tmp_path, str(self.store_path))
         except Exception:
+            logging.exception("Failed to save automatic memory")
             os.unlink(tmp_path)
             raise
 
@@ -209,7 +211,7 @@ class ConsciousMemory:
                 for e in data.get("entries", []):
                     self.entries[e["entry_id"]] = ConsciousMemoryEntry(**e)
             except Exception:
-                pass
+                logging.exception("Failed to load conscious memory")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(
@@ -230,6 +232,7 @@ class ConsciousMemory:
                 )
             os.replace(tmp_path, str(self.store_path))
         except Exception:
+            logging.exception("Failed to save conscious memory")
             os.unlink(tmp_path)
             raise
 
@@ -366,7 +369,7 @@ class KnowledgeGraph:
                 for e in data.get("edges", []):
                     self.edges[e["edge_id"]] = KnowledgeEdge(**e)
             except Exception:
-                pass
+                logging.exception("Failed to load knowledge graph")
 
     def _save(self):
         tmp_fd, tmp_path = tempfile.mkstemp(
@@ -387,6 +390,7 @@ class KnowledgeGraph:
                 )
             os.replace(tmp_path, str(self.store_path))
         except Exception:
+            logging.exception("Failed to save knowledge graph")
             os.unlink(tmp_path)
             raise
 
